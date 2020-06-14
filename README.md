@@ -104,7 +104,7 @@ CommonlyAdapter致力于`使用简单`、`可扩展`和`代码重用`，解决�
             android:layout_height="wrap_content" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 ```
-####实现代码
+#### 实现代码
 ```java_holder_method_tree
     SmartRefreshLayout smartRefreshLayout = findViewById(R.id.srfl_test);
     //设置数据
@@ -231,5 +231,6 @@ public static class SetTextRecyclerViewPlugin implements RecyclerViewConfigurato
     }
 }
 ```
-#Thanks
-(BaseRecyclerViewAdapterHelper)[https://github.com/CymChad/BaseRecyclerViewAdapterHelper]  
+# Thanks
+[BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)  
+[SmartRefreshLayout](https://github.com/scwang90/SmartRefreshLayout)  
