@@ -1,0 +1,6 @@
+include ':Reflect'
+include ':android-commons'
+include ':commonly-recyclerview'
+include ':commons'
+include ':app'
+rootProject.name = "CommonsApplication"
