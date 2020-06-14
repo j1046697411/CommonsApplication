@@ -231,3 +231,5 @@ public static class SetTextRecyclerViewPlugin implements RecyclerViewConfigurato
     }
 }
 ```
+#Thanks
+(BaseRecyclerViewAdapterHelper)[https://github.com/CymChad/BaseRecyclerViewAdapterHelper]  
