@@ -48,11 +48,11 @@ public final class EncryptUtils {
         return sha256(StringUtils.EMPTY, text, true);
     }
 
-    public static String sha512(String delimiter, String text, boolean isUpper){
+    public static String sha512(String delimiter, String text, boolean isUpper) {
         return encryptString(Algorithm.SHA512, text, StandardCharsets.UTF_8, delimiter, isUpper);
     }
 
-    public static String sha512(String text){
+    public static String sha512(String text) {
         return sha512(StringUtils.EMPTY, text, true);
     }
 

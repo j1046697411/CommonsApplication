@@ -4,7 +4,7 @@ final class ThreadLocals {
 
     private static final int BUFF_SIZE = 1024 * 8;
 
-    private static final ThreadLocal<char[]> CHARS_THREAD_LOCAL = ThreadLocal.withInitial(()->new char[BUFF_SIZE]);
+    private static final ThreadLocal<char[]> CHARS_THREAD_LOCAL = ThreadLocal.withInitial(() -> new char[BUFF_SIZE]);
     private static final ThreadLocal<byte[]> BYTES_THREAD_LOCAL = ThreadLocal.withInitial(() -> new byte[BUFF_SIZE]);
     private static final ThreadLocal<int[]> INTS_THREAD_LOCAL = ThreadLocal.withInitial(() -> new int[BUFF_SIZE]);
     private static final ThreadLocal<long[]> LONGS_THREAD_LOCAL = ThreadLocal.withInitial(() -> new long[BUFF_SIZE]);

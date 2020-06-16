@@ -2,9 +2,9 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':commons')
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
     implementation 'com.alibaba:fastjson:1.2.70'
+    implementation 'org.jzl.lang:commons:0.0.2'
 
 }
 

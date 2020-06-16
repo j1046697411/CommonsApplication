@@ -25,7 +25,7 @@ public final class MapUtils {
         return of(null, new HashMap<>());
     }
 
-    public static <K, V> HashMap<K, V> newHashMap(){
+    public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<>();
     }
 

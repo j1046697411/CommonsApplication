@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'bintray-release'
 
 android {
     compileSdkVersion 29
@@ -8,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -29,12 +30,31 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation project(path: ':commons')
-    implementation project(path: ':android-commons')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //noinspection GradleDynamicVersion
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
+    implementation 'org.jzl.lang:commons:0.0.2'
+    implementation 'org.jzl.android:android-commons:0.0.1'
+}
+
+def siteUrl = 'https://github.com/j1046697411/CommonsApplication'  //github主页
+Properties properties = new Properties();
+properties.load(new FileInputStream(new File(rootDir, "local.properties")))
+def user = properties.get("bintray.user")
+def apiKey = properties.get("bintray.apikey")
+
+publish {
+    repoName = 'commons'//远程仓库名字,不指明，默认是上传到maven
+    userOrg = 'j1046697411'//bintray.com的用户名
+    groupId = 'org.jzl.android.recyclerview'//一个唯一值，默认包名,生成的gradle依赖前缀
+    artifactId = 'commonly-recyclerview'//远程仓库包名称
+    publishVersion = '0.0.1'//版本号
+    desc = '工具库'//描述，不重要
+    website = siteUrl//引用github主页
+    bintrayUser = user
+    bintrayKey = apiKey
+    dryRun = false
 }

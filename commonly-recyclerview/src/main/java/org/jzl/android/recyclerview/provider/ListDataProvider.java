@@ -162,7 +162,7 @@ public class ListDataProvider<T> implements DataProvider<T>, Provider<List<T>> {
     public DataProvider<T> each(IntConsumer<T> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         CollectionUtils.each(data, consumer);
-        if (ObjectUtils.nonNull(adapter)){
+        if (ObjectUtils.nonNull(adapter)) {
             adapter.notifyDataSetChanged();
         }
         return this;

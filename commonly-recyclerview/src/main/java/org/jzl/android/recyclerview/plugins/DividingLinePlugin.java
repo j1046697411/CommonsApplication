@@ -28,7 +28,7 @@ public class DividingLinePlugin<T, VH extends RecyclerView.ViewHolder> implement
         //通过配置文件获取对应的contextProvider，recyclerView，layoutManager等对象，更具逻辑实现相应的分割线
         configurator.bind((contextProvider, recyclerView, layoutManager) -> {
             Context context = contextProvider.provide();
-            //StaggeredGridLayoutManager和GridLayoutManager 添加横竖的风格线
+            //StaggeredGridLayoutManager和GridLayoutManager 添加横竖的分割线
             if (layoutManager instanceof StaggeredGridLayoutManager || layoutManager instanceof GridLayoutManager) {
                 recyclerView.addItemDecoration(itemDecoration(context, dividingDrawable, StaggeredGridLayoutManager.VERTICAL));
                 recyclerView.addItemDecoration(itemDecoration(context, dividingDrawable, StaggeredGridLayoutManager.HORIZONTAL));

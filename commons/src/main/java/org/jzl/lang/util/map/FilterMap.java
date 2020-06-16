@@ -45,7 +45,7 @@ public class FilterMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        if (filter.test(key, value)){
+        if (filter.test(key, value)) {
             return value;
         }
         return map.put(key, value);

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         bind2();
     }
 
-    public void bind(){
+    public void bind() {
         SmartRefreshLayout smartRefreshLayout = findViewById(R.id.srfl_test);
         //设置数据
         CommonlyRecyclerViewConfigurator.of("1", "2")
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 .bind(findViewById(R.id.rv_test));
     }
 
-    public void bind2(){
+    public void bind2() {
         CommonlyRecyclerViewConfigurator.of("1", "2")
                 .itemViews((layoutInflater, parent) -> {
                     TextView textView = new TextView(parent.getContext());
@@ -119,13 +119,14 @@ public class MainActivity extends AppCompatActivity {
                 .bind(findViewById(R.id.tv_test2));
     }
 
-    public static class SetTextRecyclerViewPlugin implements RecyclerViewConfigurator.RecyclerViewPlugin<String, CommonlyViewHolder>{
+    public static class SetTextRecyclerViewPlugin implements RecyclerViewConfigurator.RecyclerViewPlugin<String, CommonlyViewHolder> {
 
         @Override
         public void setup(RecyclerViewConfigurator<String, CommonlyViewHolder> configurator, int... viewTypes) {
             configurator.dataBinds((holder, data) -> holder.provide().setText(R.id.tv_test, data), viewTypes);
         }
-        public static SetTextRecyclerViewPlugin of(){
+
+        public static SetTextRecyclerViewPlugin of() {
             return new SetTextRecyclerViewPlugin();
         }
     }

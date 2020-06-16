@@ -7,7 +7,7 @@ public interface EntityWrapper<E> {
 
     <T> T get(int key, T def);
 
-    default  <T> T get(int key){
+    default <T> T get(int key) {
         return get(key, null);
     }
 }

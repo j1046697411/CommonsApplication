@@ -127,7 +127,7 @@ public class WrapDataProvider<T, W extends EntityWrapper<T>> implements DataProv
         return this;
     }
 
-    public WrapDataProvider<T, W> eachWrap(IntConsumer<W> consumer){
+    public WrapDataProvider<T, W> eachWrap(IntConsumer<W> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         dataProvider.each(consumer);
         return this;

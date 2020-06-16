@@ -18,7 +18,7 @@ public class EventListenerSupport<T> {
     }
 
     public EventListenerSupport<T> addListener(T listener, boolean allowDuplicate) {
-        if (listener == null){
+        if (listener == null) {
             return this;
         }
         if (allowDuplicate) {
@@ -35,7 +35,7 @@ public class EventListenerSupport<T> {
         return proxy;
     }
 
-    public int getListenerCount(){
+    public int getListenerCount() {
         return listeners.size();
     }
 
@@ -60,11 +60,11 @@ public class EventListenerSupport<T> {
         return new ProxyInvocationHandler();
     }
 
-    public static <T> EventListenerSupport<T> support(Class<T> listenerInterface, ClassLoader classLoader){
+    public static <T> EventListenerSupport<T> support(Class<T> listenerInterface, ClassLoader classLoader) {
         return new EventListenerSupport<>(listenerInterface, classLoader);
     }
 
-    public static <T> EventListenerSupport<T> support(Class<T> listenerInterface){
+    public static <T> EventListenerSupport<T> support(Class<T> listenerInterface) {
         Objects.requireNonNull(listenerInterface);
         return support(listenerInterface, listenerInterface.getClassLoader());
     }

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class JavaMain {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         long startTime = System.nanoTime();
         System.out.println(StringUtils.join(":", null, "12", null, StringUtils.joiner("{", ":", "}").join("123").join("456"), "33"));
         System.out.println(StringUtils.join(":", Arrays.asList("ff", "12", "01", "33")));
@@ -38,10 +38,10 @@ public class JavaMain {
         System.out.println(EncryptUtils.sha512(StringUtils.EMPTY, "123", true));
         System.out.println("time:" + (System.nanoTime() - startTime));
 
-        Runnable run = ()->System.out.println("123456");
+        Runnable run = () -> System.out.println("123456");
 
-        Runnable object =(Runnable) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{Runnable.class}, (proxy, method, args1) -> {
-            System.out.println( method.getName());
+        Runnable object = (Runnable) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{Runnable.class}, (proxy, method, args1) -> {
+            System.out.println(method.getName());
             return method.invoke(run, args1);
         });
         object.run();

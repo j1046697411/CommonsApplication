@@ -30,7 +30,7 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
     private AdapterBuilder<T, VH> adapterBuilder;
     private ItemTouchHelper itemTouchHelper;
     private List<Binder> binders = new ArrayList<>();
-    private LayoutManagerFactory layoutManagerFactory = contextProvider -> new LinearLayoutManager(contextProvider.provide(), LinearLayoutManager.VERTICAL, false);
+    private LayoutManagerFactory layoutManagerFactory = contextProvider -> new LinearLayoutManager(contextProvider.provide(), RecyclerView.VERTICAL, false);
     private List<RecyclerViewPluginHolder> holders = new ArrayList<>();
 
     public CommonlyRecyclerViewConfigurator(AdapterBuilder<T, VH> adapterBuilder) {

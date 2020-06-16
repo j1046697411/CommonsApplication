@@ -22,6 +22,7 @@ public final class CollectionUtils {
         return collection != null && collection.size() != 0;
     }
 
+    @SafeVarargs
     public static <T> void addAll(Collection<T> collection, T... array) {
         Collections.addAll(collection, array);
     }

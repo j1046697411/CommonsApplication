@@ -21,11 +21,11 @@ public class LayoutManagerPlugin<T, VH extends RecyclerView.ViewHolder> implemen
         configurator.layoutManager(factory);
     }
 
-    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> linearLayoutManager(@RecyclerView.Orientation int orientation, boolean reverseLayout) {
+    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> linearLayoutManager(int orientation, boolean reverseLayout) {
         return new LayoutManagerPlugin<>(contextProvider -> new LinearLayoutManager(contextProvider.provide(), orientation, reverseLayout));
     }
 
-    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> linearLayoutManager(@RecyclerView.Orientation int orientation) {
+    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> linearLayoutManager(int orientation) {
         return linearLayoutManager(orientation, false);
     }
 
@@ -33,7 +33,7 @@ public class LayoutManagerPlugin<T, VH extends RecyclerView.ViewHolder> implemen
         return linearLayoutManager(LinearLayoutManager.VERTICAL);
     }
 
-    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, @RecyclerView.Orientation int orientation, boolean reverseLayout, LayoutManagerPlugin.SpanSizeLookup spanSizeLookup) {
+    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, int orientation, boolean reverseLayout, LayoutManagerPlugin.SpanSizeLookup spanSizeLookup) {
         return new LayoutManagerPlugin<>(contextProvider -> {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(contextProvider.provide(), spanCount, orientation, reverseLayout);
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -50,11 +50,11 @@ public class LayoutManagerPlugin<T, VH extends RecyclerView.ViewHolder> implemen
         });
     }
 
-    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, @RecyclerView.Orientation int orientation, LayoutManagerPlugin.SpanSizeLookup spanSizeLookup) {
+    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, int orientation, LayoutManagerPlugin.SpanSizeLookup spanSizeLookup) {
         return gridLayoutManager(spanCount, orientation, false, spanSizeLookup);
     }
 
-    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, @RecyclerView.Orientation int orientation) {
+    public static <T, VH extends RecyclerView.ViewHolder> LayoutManagerPlugin<T, VH> gridLayoutManager(int spanCount, int orientation) {
         return gridLayoutManager(spanCount, orientation, null);
     }
 

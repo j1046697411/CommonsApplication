@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jzl.android.provider.ContextProvider;
 import org.jzl.android.recyclerview.CommonlyAdapter;
 import org.jzl.android.recyclerview.EntityWrapperFactory;
-import org.jzl.android.recyclerview.fun.ContextProviderBinder;
 import org.jzl.android.recyclerview.fun.DataBinder;
 import org.jzl.android.recyclerview.fun.DataClassifier;
 import org.jzl.android.recyclerview.fun.DataClassifierBinder;
