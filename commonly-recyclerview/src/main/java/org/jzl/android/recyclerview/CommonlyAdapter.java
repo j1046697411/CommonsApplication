@@ -1,10 +1,13 @@
 package org.jzl.android.recyclerview;
 
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jzl.android.provider.ContextProvider;
@@ -28,6 +31,7 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
 
     public static final int ITEM_TYPE_ALL = -1;
     public static final int ITEM_TYPE_DEFAULT = ITEM_TYPE_ALL;
+    public static final int ITEM_TYPE_EMPTY = -2;
 
     private DataProvider<T> dataProvider;
     private ContextProvider contextProvider;
@@ -42,6 +46,7 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
 
     private List<DataProviderBinder<T>> dataProviderBinders;
     private List<DataClassifierBinder<T>> dataClassifierBinders;
+    private EmptyLayout<?, VH> emptyLayout;
 
     public CommonlyAdapter(
             DataProvider<T> dataProvider,
@@ -84,6 +89,27 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
                 dataClassifierBinder.bind(dataClassifier);
             }
         }
+        if (isEnableEmptyLayout()) {
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            if (layoutManager instanceof GridLayoutManager) {
+                GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+                GridLayoutManager.SpanSizeLookup spanSizeLookup = gridLayoutManager.getSpanSizeLookup();
+                gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        Log.d("test", position + "|" + gridLayoutManager.getSpanCount());
+                        if (isEnableEmptyLayout()) {
+                            return gridLayoutManager.getSpanCount();
+                        } else if (ObjectUtils.nonNull(spanSizeLookup)) {
+                            return spanSizeLookup.getSpanSize(position);
+                        } else {
+                            return 1;
+                        }
+                    }
+                });
+            }
+        }
+
     }
 
     @Override
@@ -106,12 +132,16 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemViewFactory itemViewFactory = itemViewFactories.get(viewType);
-        if (ObjectUtils.isNull(itemViewFactory)) {
-            itemViewFactory = itemViewFactories.get(ITEM_TYPE_ALL);
+        ItemViewFactory itemViewFactory;
+        if (isEmptyLayout(viewType)) {
+            itemViewFactory = emptyLayout;
+        } else {
+            itemViewFactory = itemViewFactories.get(viewType);
+            if (ObjectUtils.isNull(itemViewFactory)) {
+                itemViewFactory = itemViewFactories.get(ITEM_TYPE_ALL);
+            }
         }
         ObjectUtils.requireNonNull(itemViewFactory, "itemViewFactory");
-
         VH holder = viewHolderFactory.createViewHolder(contextProvider, viewType, itemViewFactory.createItemView(layoutInflater, parent));
         onItemViewHolderCreated(holder, viewType);
         return holder;
@@ -132,13 +162,23 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        T data = dataProvider.getData(position);
-        if (holder instanceof DataBinderCallback) {
-            ((DataBinderCallback) holder).beforeBindViewHolder();
-            bind(holder, data);
-            ((DataBinderCallback) holder).afterBindViewHolder();
+        if (isEmptyLayout(holder.getItemViewType())) {
+            if (holder instanceof DataBinderCallback) {
+                ((DataBinderCallback) holder).beforeBindViewHolder();
+                emptyLayout.bind(holder);
+                ((DataBinderCallback) holder).afterBindViewHolder();
+            } else {
+                emptyLayout.bind(holder);
+            }
         } else {
-            bind(holder, data);
+            T data = dataProvider.getData(position);
+            if (holder instanceof DataBinderCallback) {
+                ((DataBinderCallback) holder).beforeBindViewHolder();
+                bind(holder, data);
+                ((DataBinderCallback) holder).afterBindViewHolder();
+            } else {
+                bind(holder, data);
+            }
         }
     }
 
@@ -157,12 +197,48 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
 
     @Override
     public int getItemCount() {
-        return dataProvider.getDataCount();
+        if (isEnableEmptyLayout()) {
+            return 1;
+        } else {
+            return dataProvider.getDataCount();
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (isEnableEmptyLayout()) {
+            return ITEM_TYPE_EMPTY;
+        }
         return dataClassifier.getItemType(position, dataProvider.getData(position));
+    }
+
+    public CommonlyAdapter<T, VH> setEmptyLayout(EmptyLayout<?, VH> emptyLayout) {
+        this.emptyLayout = emptyLayout;
+        return this;
+    }
+
+    protected boolean isEnableEmptyLayout() {
+        return dataProvider.isEmpty() && ObjectUtils.nonNull(emptyLayout);
+    }
+
+    protected boolean isEmptyLayout(int viewType) {
+        return isEnableEmptyLayout() && viewType == ITEM_TYPE_EMPTY;
+    }
+
+    public interface EmptyLayout<T, VH extends RecyclerView.ViewHolder> extends ItemViewFactory, DataBinder<T, VH> {
+
+        T getEmptyData();
+
+        @Override
+        View createItemView(LayoutInflater layoutInflater, ViewGroup parent);
+
+        @Override
+        void bind(VH holder, T data);
+
+        default void bind(VH holder) {
+            bind(holder, getEmptyData());
+        }
+
     }
 
 }

@@ -20,6 +20,7 @@ import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
 import org.jzl.android.recyclerview.plugins.AnimationPlugin;
 import org.jzl.android.recyclerview.plugins.DividingLinePlugin;
+import org.jzl.android.recyclerview.plugins.EmptyLayoutPlugin;
 import org.jzl.android.recyclerview.plugins.ItemClickPlugin;
 import org.jzl.android.recyclerview.plugins.LayoutManagerPlugin;
 import org.jzl.android.recyclerview.plugins.RefreshLoadMorePlugin;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements DataProviderBinde
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
         SmartRefreshLayout smartRefreshLayout = findViewById(R.id.srfl_test);
-        CommonlyRecyclerViewConfigurator.of(new UserInfo("j1046697411", "https://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg"))
+        CommonlyRecyclerViewConfigurator.<UserInfo>of()
                 .itemTypes((position, data) -> position % 2)
                 .itemViews(R.layout.item_test)
                 .dataBinds((holder, data) -> {
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements DataProviderBinde
                 .plugin(DividingLinePlugin.of(Color.TRANSPARENT, 10))
                 .plugin(LayoutManagerPlugin.gridLayoutManager(2))
                 .plugin(SectionPlugin.of(false, false, R.id.cb_test))
+                .plugin(EmptyLayoutPlugin.of(R.layout.item_test_empty))
                 .plugin(SmartRefreshLayoutPlugin.of(executorService, mainHandler, smartRefreshLayout, new Pages(), (request, isRefresh, callback) -> {
                     String urlString = String.format(Locale.getDefault(), "http://192.168.137.1:8080/demo/listUsers?page=%d&pageSize=%d", request.page, request.pageSize);
                     try {
@@ -235,5 +237,10 @@ public class MainActivity extends AppCompatActivity implements DataProviderBinde
         public void setHeadImage(String headImage) {
             this.headImage = headImage;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

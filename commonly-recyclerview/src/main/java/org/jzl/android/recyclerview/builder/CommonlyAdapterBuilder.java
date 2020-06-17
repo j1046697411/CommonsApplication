@@ -42,6 +42,7 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
     private SparseArray<List<ItemViewAttachedToWindow<VH>>> itemViewAttachedToWindows = new SparseArray<>();
 
     private EntityWrapperFactory<T, ? extends EntityWrapper<T>> entityWrapperFactory;
+    private CommonlyAdapter.EmptyLayout<?, VH> emptyLayout;
 
     public CommonlyAdapterBuilder(ViewHolderFactory<VH> viewHolderFactory, DataProvider<T> dataProvider) {
         this.dataClassifier = (position, data) -> CommonlyAdapter.ITEM_TYPE_DEFAULT;
@@ -119,6 +120,12 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
         return this;
     }
 
+    @Override
+    public AdapterBuilder<T, VH> emptyLayout(CommonlyAdapter.EmptyLayout<?, VH> emptyLayout) {
+        this.emptyLayout = emptyLayout;
+        return this;
+    }
+
     public boolean isWrap() {
         return entityWrapperFactory != null;
     }
@@ -144,7 +151,7 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
                 dataProviderBinders,
                 dataClassifierBinders,
                 itemViewAttachedToWindows
-        );
+        ).setEmptyLayout(emptyLayout);
     }
 
     private <V> CommonlyAdapterBuilder<T, VH> puts(SparseArray<V> sparseArray, V value, int... viewTypes) {

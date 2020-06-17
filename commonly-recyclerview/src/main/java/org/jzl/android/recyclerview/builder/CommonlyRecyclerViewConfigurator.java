@@ -117,6 +117,12 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
+    public RecyclerViewConfigurator<T, VH> emptyLayout(CommonlyAdapter.EmptyLayout<?, VH> emptyLayout) {
+        adapterBuilder.emptyLayout(emptyLayout);
+        return this;
+    }
+
+    @Override
     public RecyclerViewConfigurator<T, VH> viewHolders(ItemViewHolderListener<T, VH> listener, int... viewTypes) {
         adapterBuilder.viewHolders(listener, viewTypes);
         return this;
@@ -134,12 +140,12 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
         ObjectUtils.requireNonNull(contextProvider, "contextProvider");
         plugins(1);
         CommonlyAdapter<T, VH> adapter = adapterBuilder.build(contextProvider);
-        recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = layoutManagerFactory.createLayoutManager(contextProvider);
         recyclerView.setLayoutManager(layoutManager);
         if (ObjectUtils.nonNull(itemTouchHelper)) {
             itemTouchHelper.attachToRecyclerView(recyclerView);
         }
+        recyclerView.setAdapter(adapter);
         binds(contextProvider, recyclerView, layoutManager);
     }
 

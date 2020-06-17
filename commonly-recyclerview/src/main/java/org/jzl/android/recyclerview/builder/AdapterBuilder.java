@@ -1,7 +1,5 @@
 package org.jzl.android.recyclerview.builder;
 
-import android.util.SparseArray;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jzl.android.provider.ContextProvider;
@@ -17,7 +15,6 @@ import org.jzl.android.recyclerview.fun.ItemViewHolderListener;
 import org.jzl.android.recyclerview.wrap.EntityWrapper;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface AdapterBuilder<T, VH extends RecyclerView.ViewHolder> {
 
@@ -42,6 +39,8 @@ public interface AdapterBuilder<T, VH extends RecyclerView.ViewHolder> {
     boolean isWrap();
 
     <W extends EntityWrapper<T>> AdapterBuilder<T, VH> wrap(EntityWrapperFactory<T, W> factory);
+
+    AdapterBuilder<T, VH> emptyLayout(CommonlyAdapter.EmptyLayout<?, VH> emptyLayout);
 
     CommonlyAdapter<T, VH> build(ContextProvider contextProvider);
 

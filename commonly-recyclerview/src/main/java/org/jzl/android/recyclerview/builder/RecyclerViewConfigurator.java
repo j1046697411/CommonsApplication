@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jzl.android.provider.ContextProvider;
+import org.jzl.android.recyclerview.CommonlyAdapter;
 import org.jzl.android.recyclerview.EntityWrapperFactory;
 import org.jzl.android.recyclerview.fun.DataBinder;
 import org.jzl.android.recyclerview.fun.DataClassifier;
@@ -45,6 +46,8 @@ public interface RecyclerViewConfigurator<T, VH extends RecyclerView.ViewHolder>
     <W extends EntityWrapper<T>> RecyclerViewConfigurator<T, VH> wrap(EntityWrapperFactory<T, W> factory);
 
     boolean isWrap();
+
+    RecyclerViewConfigurator<T, VH> emptyLayout(CommonlyAdapter.EmptyLayout<?, VH> emptyLayout);
 
     default RecyclerViewConfigurator<T, VH> itemViews(final  @LayoutRes int layoutId,final boolean attachToRoot, int... viewTypes) {
         return itemViews((layoutInflater, parent) -> layoutInflater.inflate(layoutId, parent, attachToRoot), viewTypes);
