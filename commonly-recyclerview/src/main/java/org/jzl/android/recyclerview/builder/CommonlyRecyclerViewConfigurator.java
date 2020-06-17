@@ -132,7 +132,7 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
     public void bind(ContextProvider contextProvider, RecyclerView recyclerView) {
         ObjectUtils.requireNonNull(recyclerView, "recyclerView");
         ObjectUtils.requireNonNull(contextProvider, "contextProvider");
-        plugins();
+        plugins(1);
         CommonlyAdapter<T, VH> adapter = adapterBuilder.build(contextProvider);
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = layoutManagerFactory.createLayoutManager(contextProvider);
@@ -143,9 +143,14 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
         binds(contextProvider, recyclerView, layoutManager);
     }
 
-    private void plugins() {
+    private void plugins(int nesting) {
+        List<RecyclerViewPluginHolder> holders = new ArrayList<>(this.holders);
+        this.holders.clear();
         for (RecyclerViewPluginHolder holder : holders) {
             holder.plugin.setup(this, holder.viewTypes);
+        }
+        if (CollectionUtils.nonEmpty(this.holders) && nesting <= 10) {
+            plugins(nesting + 1);
         }
     }
 
