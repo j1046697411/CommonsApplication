@@ -20,6 +20,7 @@ public class RefreshLoadMorePlugin<R, T, VH extends RecyclerView.ViewHolder> imp
     private RefreshLoadMoreHelper.Callback<R> callback;
     private ExecutorService executorService;
     private Handler mainHandler;
+    private boolean autoRefresh;
 
     private RefreshLoadMorePlugin(ExecutorService executorService, Handler mainHandler, RefreshLayout refreshLayout, R request, DataLoader<R, T> dataLoader, RefreshLoadMoreHelper.Callback<R> callback) {
         this.executorService = ObjectUtils.requireNonNull(executorService, "executorService");
@@ -35,11 +36,11 @@ public class RefreshLoadMorePlugin<R, T, VH extends RecyclerView.ViewHolder> imp
         configurator.bindDataProviderBinder(dataProvider -> RefreshLoadMoreHelper.of(executorService, mainHandler, refreshLayout, dataProvider, dataLoader, callback, request));
     }
 
-    public static <R, T, VH extends RecyclerView.ViewHolder> RefreshLoadMorePlugin<R, T, VH> of(ExecutorService executorService, Handler mainHandler,RefreshLayout refreshLayout, R request, DataLoader<R, T> dataLoader, RefreshLoadMoreHelper.Callback<R> callback) {
-        return new RefreshLoadMorePlugin<>(executorService, mainHandler, refreshLayout, request, dataLoader, callback);
+    public static <R, T, VH extends RecyclerView.ViewHolder> RefreshLoadMorePlugin<R, T, VH> of(ExecutorService executorService, Handler mainHandler, RefreshLayout refreshLayout, R request, DataLoader<R, T> dataLoader, RefreshLoadMoreHelper.Callback<R> callback) {
+        return new RefreshLoadMorePlugin<>( executorService, mainHandler, refreshLayout, request, dataLoader, callback);
     }
 
-    public static <R extends PageRequest<R>, T, VH extends RecyclerView.ViewHolder> RefreshLoadMorePlugin<R, T, VH> of(ExecutorService executorService, Handler mainHandler,RefreshLayout refreshLayout, R request, DataLoader<R, T> dataLoader) {
+    public static <R extends PageRequest<R>, T, VH extends RecyclerView.ViewHolder> RefreshLoadMorePlugin<R, T, VH> of(ExecutorService executorService, Handler mainHandler, RefreshLayout refreshLayout, R request, DataLoader<R, T> dataLoader) {
         return of(executorService, mainHandler, refreshLayout, request, dataLoader, (isRefresh, req) -> {
             if (isRefresh) {
                 return req.firstPage();

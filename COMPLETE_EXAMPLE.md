@@ -1,48 +1,7 @@
-package org.jzl;
+# 完整示例
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-
-import org.jzl.android.recyclerview.builder.CommonlyRecyclerViewConfigurator;
-import org.jzl.android.recyclerview.builder.RecyclerViewConfigurator;
-import org.jzl.android.recyclerview.fun.DataProvider;
-import org.jzl.android.recyclerview.fun.DataProviderBinder;
-import org.jzl.android.recyclerview.plugins.AnimationPlugin;
-import org.jzl.android.recyclerview.plugins.DividingLinePlugin;
-import org.jzl.android.recyclerview.plugins.EmptyLayoutPlugin;
-import org.jzl.android.recyclerview.plugins.ItemClickPlugin;
-import org.jzl.android.recyclerview.plugins.LayoutManagerPlugin;
-import org.jzl.android.recyclerview.plugins.RefreshLoadMorePlugin;
-import org.jzl.android.recyclerview.plugins.SectionPlugin;
-import org.jzl.android.recyclerview.refresh.DataLoader;
-import org.jzl.android.recyclerview.refresh.OnLoadMoreListener;
-import org.jzl.android.recyclerview.refresh.OnRefreshListener;
-import org.jzl.android.recyclerview.refresh.RefreshLayout;
-import org.jzl.android.recyclerview.refresh.RefreshLoadMoreHelper;
-import org.jzl.lang.util.ObjectUtils;
-import org.jzl.lang.util.RandomUtils;
-import org.jzl.lang.util.StreamUtils;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+### Android 示例代码
+```java
 public class MainActivity extends AppCompatActivity implements DataProviderBinder<MainActivity.UserInfo> {
 
     private ExecutorService executorService;
@@ -251,3 +210,70 @@ public class MainActivity extends AppCompatActivity implements DataProviderBinde
         super.onDestroy();
     }
 }
+```
+### 服务器代码
+```java
+@SpringBootApplication
+public class DemoApplication {
+    private static final String[] headImages = {
+            "https://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg",
+            "https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1803056350,344909414&fm=111&gp=0.jpg",
+            "https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3321238736,733069773&fm=26&gp=0.jpg",
+            "https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3621869950,2480486393&fm=26&gp=0.jpg",
+            "https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3521319392,1160740190&fm=26&gp=0.jpg",
+            "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2743353606,4180318799&fm=26&gp=0.jpg"
+    };
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+    @RestController
+    @RequestMapping("/demo")
+    public static class DemoController {
+
+        @RequestMapping("/listUsers")
+        public ResultObject<List<UserInfo>> listUsers(int page, int pageSize) {
+            ArrayList<UserInfo> userInfos = new ArrayList<>();
+            for (int i = 0; i < pageSize; i++) {
+                userInfos.add(this.randomUserInfo());
+            }
+            ResultObject<List<UserInfo>> resultObject = new ResultObject<>();
+            resultObject.code = 200;
+            resultObject.message = "ok";
+            resultObject.data = userInfos;
+            resultObject.hasNextPage = page < 10;
+            return resultObject;
+
+        }
+
+        public UserInfo randomUserInfo() {
+            UserInfo info = new UserInfo();
+            info.username = StringRandomUtils.randomLowerString(10);
+            info.headImage = headImages[RandomUtils.random(headImages.length)];
+            return info;
+        }
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResultObject<T> {
+        private int code;
+        private String message;
+        private boolean hasNextPage;
+        private T data;
+    }
+
+    @Data
+    public static class UserInfo {
+
+        private String username;
+        private String headImage;
+
+    }
+
+}
+
+```

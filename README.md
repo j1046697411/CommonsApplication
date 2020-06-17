@@ -3,7 +3,10 @@
 （喜欢的可以**Star**一下）  
 该适配器是基于`AndroidX`构建的，暂时不打算支持老版本的`RecyclerView`
 CommonlyAdapter致力于`使用简单`、`可扩展`和`代码重用`，解决开发中常遇到的布局和数据绑定的问题。  
-[一个使用简单、可扩展和代码重用的RecyclerViewAdapter](https://blog.csdn.net/qq_19326641/article/details/106747725)  
+[一个使用简单、可扩展和代码重用的RecyclerViewAdapter](https://blog.csdn.net/qq_19326641/article/details/106747725)
+
+[完整示例](./COMPLETE_EXAMPLE.md)
+
 # 引入方式
 ```
 implementation 'org.jzl.android:android-commons:0.0.1' #主要提供设置view的快捷方式
