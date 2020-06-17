@@ -1,7 +1,6 @@
 package org.jzl.android.recyclerview.plugins;
 
 import android.util.Log;
-import android.widget.CompoundButton;
 
 import androidx.annotation.IdRes;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +12,7 @@ import org.jzl.android.recyclerview.fun.DataClassifierBinder;
 import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
 import org.jzl.android.recyclerview.provider.WrapDataProvider;
-import org.jzl.android.recyclerview.vh.CommonlyViewHolder;
+import org.jzl.android.recyclerview.util.ViewBinderUtils;
 import org.jzl.android.recyclerview.wrap.CommonlyWrapper;
 import org.jzl.android.recyclerview.wrap.EntityWrapper;
 import org.jzl.lang.util.ArrayUtils;
@@ -102,18 +101,8 @@ public class SectionPlugin<T, VH extends RecyclerView.ViewHolder> implements Rec
 
     public static <T, VH extends RecyclerView.ViewHolder> SectionPlugin<T, VH> of(boolean isSingleSelect, boolean isSingleViewTypes, @IdRes int id) {
         return of(isSingleSelect, isSingleViewTypes, (holder, data, selected, selector) -> {
-            int tag = 0x963158;
-            ViewBinder binder;
-            if (holder instanceof CommonlyViewHolder) {
-                binder = ((CommonlyViewHolder) holder).provide();
-            } else {
-                binder = (ViewBinder) holder.itemView.getTag(tag);
-                if (ObjectUtils.nonNull(binder)) {
-                    binder = ViewBinder.bind(holder.itemView);
-                    holder.itemView.setTag(tag, binder);
-                }
-            }
-            binder.bindCheckedChangeListener(id, (CompoundButton.OnCheckedChangeListener) null);
+            ViewBinder binder = ViewBinderUtils.getViewBinder(holder);
+            binder.bindCheckedChangeListener(id, null);
             binder.setChecked(id, selected);
             binder.bindCheckedChangeListener(id, (buttonView, isChecked) -> selector.select(isChecked));
         });

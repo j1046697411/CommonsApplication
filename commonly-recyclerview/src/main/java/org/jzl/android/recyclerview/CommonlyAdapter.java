@@ -29,7 +29,6 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
     public static final int ITEM_TYPE_ALL = -1;
     public static final int ITEM_TYPE_DEFAULT = ITEM_TYPE_ALL;
 
-
     private DataProvider<T> dataProvider;
     private ContextProvider contextProvider;
     private ViewHolderFactory<VH> viewHolderFactory;

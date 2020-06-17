@@ -4,7 +4,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +18,7 @@ import org.jzl.android.recyclerview.builder.CommonlyRecyclerViewConfigurator;
 import org.jzl.android.recyclerview.builder.RecyclerViewConfigurator;
 import org.jzl.android.recyclerview.plugins.AnimationPlugin;
 import org.jzl.android.recyclerview.plugins.DividingLinePlugin;
+import org.jzl.android.recyclerview.plugins.ItemClickPlugin;
 import org.jzl.android.recyclerview.plugins.LayoutManagerPlugin;
 import org.jzl.android.recyclerview.plugins.RefreshLoadMorePlugin;
 import org.jzl.android.recyclerview.plugins.SectionPlugin;
@@ -53,18 +56,19 @@ public class MainActivity extends AppCompatActivity {
         mainHandler = new Handler(Looper.getMainLooper());
         SmartRefreshLayout smartRefreshLayout = findViewById(R.id.srfl_test);
         CommonlyRecyclerViewConfigurator.of(new UserInfo("j1046697411", "https://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg"))
-                .itemTypes((position, data) -> position % 3)
+                .itemTypes((position, data) -> position % 2)
                 .itemViews(R.layout.item_test)
                 .dataBinds((holder, data) -> {
                     holder.provide().setText(R.id.tv_username, data.username);
                     holder.provide().setTextColor(R.id.tv_username, colors[RandomUtils.random(colors.length)]);
                     Glide.with(this).load(data.headImage).into(holder.<ImageView>findViewById(R.id.iv_head));
                 })
-                .plugin(AnimationPlugin.ofSlideInRight(), 2)
-                .plugin(AnimationPlugin.ofSlideInBottom(), 1)
+                .plugin(ItemClickPlugin.of(true, (holder, view, data) -> Toast.makeText(this, data.username, Toast.LENGTH_LONG).show()), 0)
+                .plugin(ItemClickPlugin.of(false, (holder, view, data) -> Toast.makeText(this, data.username, Toast.LENGTH_LONG).show()), 1)
+                .plugin(AnimationPlugin.ofSlideInRight(), 1)
                 .plugin(AnimationPlugin.ofSlideInLeft(), 0)
                 .plugin(DividingLinePlugin.of(Color.TRANSPARENT, 10))
-                .plugin(LayoutManagerPlugin.gridLayoutManager(3))
+                .plugin(LayoutManagerPlugin.gridLayoutManager(2))
                 .plugin(SectionPlugin.of(false, false, R.id.cb_test))
                 .plugin(RefreshLoadMorePlugin.of(executorService, mainHandler, new RefreshLayout() {
                     @Override
@@ -99,18 +103,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }))
                 .bind(findViewById(R.id.rv_test));
-    }
-
-    public static class SetTextRecyclerViewPlugin implements RecyclerViewConfigurator.RecyclerViewPlugin<String, CommonlyViewHolder> {
-
-        @Override
-        public void setup(RecyclerViewConfigurator<String, CommonlyViewHolder> configurator, int... viewTypes) {
-            configurator.dataBinds((holder, data) -> holder.provide().setText(R.id.tv_test, data), viewTypes);
-        }
-
-        public static SetTextRecyclerViewPlugin of() {
-            return new SetTextRecyclerViewPlugin();
-        }
     }
 
     private static class Pages implements RefreshLoadMorePlugin.PageRequest<Pages> {

@@ -14,6 +14,8 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 
+import org.jzl.lang.util.ArrayUtils;
+
 public class ViewBinder implements ViewFinder {
 
     private ViewFinder finder;
@@ -84,6 +86,38 @@ public class ViewBinder implements ViewFinder {
 
     public ViewBinder bindCheckedChangeListener(@IdRes int id, CompoundButton.OnCheckedChangeListener listener) {
         this.<CompoundButton>findViewById(id).setOnCheckedChangeListener(listener);
+        return this;
+    }
+
+    public ViewBinder bindOnLongClickListener(@IdRes int id, View.OnLongClickListener clickListener) {
+        this.findViewById(id).setOnLongClickListener(clickListener);
+        return this;
+    }
+
+    public ViewBinder bindClickListeners(View.OnClickListener listener, int... ids) {
+        if (ArrayUtils.nonEmpty(ids)) {
+            for (int id : ids) {
+                this.findViewById(id).setOnClickListener(listener);
+            }
+        }
+        return this;
+    }
+
+    public ViewBinder bindCheckedChangeListeners(CompoundButton.OnCheckedChangeListener listener, @IdRes int... ids) {
+        if (ArrayUtils.nonEmpty(ids)) {
+            for (int id : ids) {
+                this.<CompoundButton>findViewById(id).setOnCheckedChangeListener(listener);
+            }
+        }
+        return this;
+    }
+
+    public ViewBinder bindLongClickListeners(View.OnLongClickListener longClickListener, @IdRes int... ids) {
+        if (ArrayUtils.nonEmpty(ids)) {
+            for (int id : ids) {
+                findViewById(id).setOnLongClickListener(longClickListener);
+            }
+        }
         return this;
     }
 

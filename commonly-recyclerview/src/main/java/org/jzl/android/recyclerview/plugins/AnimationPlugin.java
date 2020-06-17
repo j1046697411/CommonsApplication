@@ -27,6 +27,7 @@ public class AnimationPlugin<T, VH extends RecyclerView.ViewHolder> implements R
 
     @Override
     public void setup(RecyclerViewConfigurator<T, VH> configurator, int... viewTypes) {
+        configurator.bindDataProviderBinder(dataProvider -> dataProvider.register(() -> lastPosition = 0));
         configurator.itemViewAttachedToWindows(holder -> {
             if (holder.getAdapterPosition() > lastPosition) {
                 animation.animator(holder.itemView).start();

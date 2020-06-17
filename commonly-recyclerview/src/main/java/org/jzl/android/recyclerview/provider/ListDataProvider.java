@@ -9,6 +9,7 @@ import org.jzl.lang.util.ArrayUtils;
 import org.jzl.lang.util.CollectionUtils;
 import org.jzl.lang.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class ListDataProvider<T> implements DataProvider<T>, Provider<List<T>> {
 
     private RecyclerView.Adapter<?> adapter;
     private List<T> data;
+    private List<DataObserver> observers;
 
     private ListDataProvider(List<T> data) {
         this.data = data;
@@ -26,6 +28,16 @@ public class ListDataProvider<T> implements DataProvider<T>, Provider<List<T>> {
     @Override
     public void bindAdapter(RecyclerView.Adapter<?> adapter) {
         this.adapter = adapter;
+    }
+
+    @Override
+    public void register(DataObserver observer) {
+        if (ObjectUtils.nonNull(observer)) {
+            if (ObjectUtils.isNull(observers)) {
+                this.observers = new ArrayList<>();
+            }
+            observers.add(observer);
+        }
     }
 
     @Override
@@ -129,10 +141,19 @@ public class ListDataProvider<T> implements DataProvider<T>, Provider<List<T>> {
     @Override
     public DataProvider<T> clear() {
         this.data.clear();
+        onClear();
         if (ObjectUtils.nonNull(adapter)) {
             this.adapter.notifyDataSetChanged();
         }
         return this;
+    }
+
+    private void onClear() {
+        if (CollectionUtils.nonEmpty(observers)) {
+            for (DataObserver observer : observers) {
+                observer.onClear();
+            }
+        }
     }
 
     @Override

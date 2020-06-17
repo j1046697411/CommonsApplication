@@ -46,7 +46,7 @@ public interface RecyclerViewConfigurator<T, VH extends RecyclerView.ViewHolder>
 
     boolean isWrap();
 
-    default RecyclerViewConfigurator<T, VH> itemViews(final @LayoutRes int layoutId, final boolean attachToRoot, int... viewTypes) {
+    default RecyclerViewConfigurator<T, VH> itemViews(final  @LayoutRes int layoutId,final boolean attachToRoot, int... viewTypes) {
         return itemViews((layoutInflater, parent) -> layoutInflater.inflate(layoutId, parent, attachToRoot), viewTypes);
     }
 

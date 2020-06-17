@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jzl.android.recyclerview.EntityWrapperFactory;
 import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.wrap.EntityWrapper;
-import org.jzl.lang.fun.Consumer;
 import org.jzl.lang.fun.IntConsumer;
 import org.jzl.lang.util.CollectionUtils;
 import org.jzl.lang.util.ObjectUtils;
@@ -29,6 +28,11 @@ public class WrapDataProvider<T, W extends EntityWrapper<T>> implements DataProv
     @Override
     public void bindAdapter(RecyclerView.Adapter<?> adapter) {
         dataProvider.bindAdapter(adapter);
+    }
+
+    @Override
+    public void register(DataObserver observer) {
+        dataProvider.register(observer);
     }
 
     @Override

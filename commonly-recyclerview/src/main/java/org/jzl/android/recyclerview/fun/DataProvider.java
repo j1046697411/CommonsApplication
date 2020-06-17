@@ -12,6 +12,8 @@ public interface DataProvider<T> extends Provider<List<T>> {
 
     void bindAdapter(RecyclerView.Adapter<?> adapter);
 
+    void register(DataProvider.DataObserver observer);
+
     int getDataCount();
 
     T getData(int position);
@@ -41,4 +43,8 @@ public interface DataProvider<T> extends Provider<List<T>> {
     DataProvider<T> move(int position, int targetPosition);
 
     DataProvider<T> each(IntConsumer<T> consumer);
+
+    interface DataObserver {
+        void onClear();
+    }
 }
