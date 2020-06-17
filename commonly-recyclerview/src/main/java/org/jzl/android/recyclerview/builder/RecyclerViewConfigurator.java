@@ -10,6 +10,7 @@ import org.jzl.android.recyclerview.fun.DataBinder;
 import org.jzl.android.recyclerview.fun.DataClassifier;
 import org.jzl.android.recyclerview.fun.DataClassifierBinder;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
+import org.jzl.android.recyclerview.fun.ItemViewAttachedToWindow;
 import org.jzl.android.recyclerview.fun.ItemViewFactory;
 import org.jzl.android.recyclerview.fun.ItemViewHolderListener;
 import org.jzl.android.recyclerview.wrap.EntityWrapper;
@@ -26,6 +27,8 @@ public interface RecyclerViewConfigurator<T, VH extends RecyclerView.ViewHolder>
     RecyclerViewConfigurator<T, VH> bind(Binder... binders);
 
     RecyclerViewConfigurator<T, VH> dataBinds(DataBinder<T, VH> dataBinder, int... viewTypes);
+
+    RecyclerViewConfigurator<T, VH> itemViewAttachedToWindows(ItemViewAttachedToWindow<VH> itemViewAttachedToWindow, int... viewTypes);
 
     RecyclerViewConfigurator<T, VH> bindDataProviderBinder(DataProviderBinder<T> binder);
 

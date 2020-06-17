@@ -12,18 +12,20 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url "https://dl.bintray.com/j1046697411/commons/"
-        }
-        maven {
-            url "https://dl.bintray.com/j1046697411/android-commons"
-        }
         google()
         jcenter()
     }
-
+    // 下面三行
+    tasks.withType(Javadoc) { // 新增
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+// 指定javadoc UTF-8格式
+task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
 }

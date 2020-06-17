@@ -12,6 +12,7 @@ import org.jzl.android.recyclerview.fun.DataClassifier;
 import org.jzl.android.recyclerview.fun.DataClassifierBinder;
 import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
+import org.jzl.android.recyclerview.fun.ItemViewAttachedToWindow;
 import org.jzl.android.recyclerview.fun.ItemViewFactory;
 import org.jzl.android.recyclerview.fun.ItemViewHolderListener;
 import org.jzl.android.recyclerview.provider.ListDataProvider;
@@ -38,6 +39,7 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
     private SparseArray<List<ItemViewHolderListener<T, VH>>> listeners = new SparseArray<>();
     private List<DataProviderBinder<T>> dataProviderBinders = new ArrayList<>();
     private List<DataClassifierBinder<T>> dataClassifierBinders = new ArrayList<>();
+    private SparseArray<List<ItemViewAttachedToWindow<VH>>> itemViewAttachedToWindows = new SparseArray<>();
 
     private EntityWrapperFactory<T, ? extends EntityWrapper<T>> entityWrapperFactory;
 
@@ -75,6 +77,11 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
             return this;
         }
         return putLists(listeners, listener, viewTypes);
+    }
+
+    @Override
+    public AdapterBuilder<T, VH> itemViewAttachedToWindows(ItemViewAttachedToWindow<VH> itemViewAttachedToWindow, int... viewTypes) {
+        return putLists(this.itemViewAttachedToWindows, itemViewAttachedToWindow, viewTypes);
     }
 
     @Override
@@ -135,7 +142,8 @@ public class CommonlyAdapterBuilder<T, VH extends RecyclerView.ViewHolder> imple
                 dataBinders,
                 listeners,
                 dataProviderBinders,
-                dataClassifierBinders
+                dataClassifierBinders,
+                itemViewAttachedToWindows
         );
     }
 

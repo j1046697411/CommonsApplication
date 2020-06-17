@@ -12,6 +12,7 @@ import org.jzl.android.recyclerview.fun.DataClassifier;
 import org.jzl.android.recyclerview.fun.DataClassifierBinder;
 import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
+import org.jzl.android.recyclerview.fun.ItemViewAttachedToWindow;
 import org.jzl.android.recyclerview.fun.ItemViewFactory;
 import org.jzl.android.recyclerview.fun.ItemViewHolderListener;
 import org.jzl.android.recyclerview.provider.ListDataProvider;
@@ -58,6 +59,12 @@ public class CommonlyRecyclerViewConfigurator<T, VH extends RecyclerView.ViewHol
     @Override
     public RecyclerViewConfigurator<T, VH> dataBinds(DataBinder<T, VH> dataBinder, int... viewTypes) {
         adapterBuilder.dataBinds(dataBinder, viewTypes);
+        return this;
+    }
+
+    @Override
+    public RecyclerViewConfigurator<T, VH> itemViewAttachedToWindows(ItemViewAttachedToWindow<VH> itemViewAttachedToWindow, int... viewTypes) {
+        adapterBuilder.itemViewAttachedToWindows(itemViewAttachedToWindow, viewTypes);
         return this;
     }
 

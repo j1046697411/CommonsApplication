@@ -1,5 +1,6 @@
 package org.jzl.lang.util;
 
+import org.jzl.lang.fun.IntBinaryConsumer;
 import org.jzl.lang.fun.IntConsumer;
 
 import java.lang.reflect.Array;
@@ -81,6 +82,15 @@ public final class ArrayUtils {
     }
 
     public static <T> void each(T[] array, IntConsumer<T> consumer) {
+        ObjectUtils.requireNonNull(consumer, "consumer");
+        if (nonEmpty(array)) {
+            for (int i = 0; i < array.length; i++) {
+                consumer.accept(i, array[i]);
+            }
+        }
+    }
+
+    public static void each(int[] array, IntBinaryConsumer consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         if (nonEmpty(array)) {
             for (int i = 0; i < array.length; i++) {

@@ -36,10 +36,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //noinspection GradleDynamicVersion
     implementation 'androidx.recyclerview:recyclerview:1+'
+    implementation "com.github.bumptech.glide:glide:4.10.0"
 
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.0'
     implementation 'com.scwang.smart:refresh-footer-classics:2.0.0'
     implementation 'com.scwang.smart:refresh-header-classics:2.0.0'
+
+    implementation 'com.alibaba:fastjson:1.2.70'
 
     implementation 'org.jzl.lang:commons:0.0.2'
     implementation 'org.jzl.android:android-commons:0.0.1'

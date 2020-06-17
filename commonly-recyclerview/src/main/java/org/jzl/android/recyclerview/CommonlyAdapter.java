@@ -13,6 +13,7 @@ import org.jzl.android.recyclerview.fun.DataClassifier;
 import org.jzl.android.recyclerview.fun.DataClassifierBinder;
 import org.jzl.android.recyclerview.fun.DataProvider;
 import org.jzl.android.recyclerview.fun.DataProviderBinder;
+import org.jzl.android.recyclerview.fun.ItemViewAttachedToWindow;
 import org.jzl.android.recyclerview.fun.ItemViewFactory;
 import org.jzl.android.recyclerview.fun.ItemViewHolderListener;
 import org.jzl.android.recyclerview.vh.DataBinderCallback;
@@ -20,11 +21,14 @@ import org.jzl.android.recyclerview.vh.ViewHolderFactory;
 import org.jzl.lang.util.CollectionUtils;
 import org.jzl.lang.util.ObjectUtils;
 
+import java.util.Collection;
 import java.util.List;
 
 public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    public static final int ITEM_TYPE_DEFAULT = 0;
+    public static final int ITEM_TYPE_ALL = -1;
+    public static final int ITEM_TYPE_DEFAULT = ITEM_TYPE_ALL;
+
 
     private DataProvider<T> dataProvider;
     private ContextProvider contextProvider;
@@ -35,10 +39,23 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
     private SparseArray<ItemViewFactory> itemViewFactories;
     private SparseArray<List<DataBinder<T, VH>>> dataBinders;
     private SparseArray<List<ItemViewHolderListener<T, VH>>> itemViewHolderListeners;
+    private SparseArray<List<ItemViewAttachedToWindow<VH>>> itemViewAttachedToWindows;
+
     private List<DataProviderBinder<T>> dataProviderBinders;
     private List<DataClassifierBinder<T>> dataClassifierBinders;
 
-    public CommonlyAdapter(DataProvider<T> dataProvider, ContextProvider contextProvider, ViewHolderFactory<VH> viewHolderFactory, DataClassifier<T> dataClassifier, SparseArray<ItemViewFactory> itemViewFactories, SparseArray<List<DataBinder<T, VH>>> dataBinders, SparseArray<List<ItemViewHolderListener<T, VH>>> itemViewHolderListeners, List<DataProviderBinder<T>> dataProviderBinders, List<DataClassifierBinder<T>> dataClassifierBinders) {
+    public CommonlyAdapter(
+            DataProvider<T> dataProvider,
+            ContextProvider contextProvider,
+            ViewHolderFactory<VH> viewHolderFactory,
+            DataClassifier<T> dataClassifier,
+            SparseArray<ItemViewFactory> itemViewFactories,
+            SparseArray<List<DataBinder<T, VH>>> dataBinders,
+            SparseArray<List<ItemViewHolderListener<T, VH>>> itemViewHolderListeners,
+            List<DataProviderBinder<T>> dataProviderBinders,
+            List<DataClassifierBinder<T>> dataClassifierBinders,
+            SparseArray<List<ItemViewAttachedToWindow<VH>>> itemViewAttachedToWindows
+    ) {
         this.dataProvider = ObjectUtils.requireNonNull(dataProvider, "dataProvider");
         this.contextProvider = ObjectUtils.requireNonNull(contextProvider, "contextProvider");
         this.viewHolderFactory = ObjectUtils.requireNonNull(viewHolderFactory, "viewHolderFactory");
@@ -47,6 +64,7 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
         this.itemViewFactories = ObjectUtils.requireNonNull(itemViewFactories, "itemViewFactories");
         this.dataBinders = ObjectUtils.requireNonNull(dataBinders, "dataBinders");
         this.itemViewHolderListeners = ObjectUtils.requireNonNull(itemViewHolderListeners, "itemViewHolderListeners");
+        this.itemViewAttachedToWindows = ObjectUtils.requireNonNull(itemViewAttachedToWindows, "itemViewAttachedToWindows");
 
         this.dataProviderBinders = dataProviderBinders;
         this.dataClassifierBinders = dataClassifierBinders;
@@ -69,20 +87,43 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
         }
     }
 
+    @Override
+    public void onViewAttachedToWindow(@NonNull VH holder) {
+        super.onViewAttachedToWindow(holder);
+        if (ObjectUtils.nonNull(itemViewAttachedToWindows)) {
+            onViewAttachedToWindow(itemViewAttachedToWindows.get(holder.getItemViewType()), holder);
+            onViewAttachedToWindow(itemViewAttachedToWindows.get(ITEM_TYPE_ALL), holder);
+        }
+    }
+
+    private void onViewAttachedToWindow(List<ItemViewAttachedToWindow<VH>> itemViewAttachedToWindows, VH holder) {
+        if (CollectionUtils.nonEmpty(itemViewAttachedToWindows)) {
+            for (ItemViewAttachedToWindow<VH> itemViewAttachedToWindow : itemViewAttachedToWindows) {
+                itemViewAttachedToWindow.onViewAttachedToWindow(holder);
+            }
+        }
+    }
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemViewFactory itemViewFactory = itemViewFactories.get(viewType);
         if (ObjectUtils.isNull(itemViewFactory)) {
-            throw new NullPointerException(String.format("itemViewFactory is null, viewType is %d", viewType));
+            itemViewFactory = itemViewFactories.get(ITEM_TYPE_ALL);
         }
+        ObjectUtils.requireNonNull(itemViewFactory, "itemViewFactory");
+
         VH holder = viewHolderFactory.createViewHolder(contextProvider, viewType, itemViewFactory.createItemView(layoutInflater, parent));
         onItemViewHolderCreated(holder, viewType);
         return holder;
     }
 
     protected void onItemViewHolderCreated(VH holder, int viewType) {
-        List<ItemViewHolderListener<T, VH>> listeners = itemViewHolderListeners.get(viewType);
+        onItemViewHolderCreated(this.itemViewHolderListeners.get(viewType), holder);
+        onItemViewHolderCreated(itemViewHolderListeners.get(ITEM_TYPE_ALL), holder);
+    }
+
+    private void onItemViewHolderCreated(Collection<ItemViewHolderListener<T, VH>> listeners, VH holder) {
         if (CollectionUtils.nonEmpty(listeners)) {
             for (ItemViewHolderListener<T, VH> listener : listeners) {
                 listener.onItemViewHolderCreated(holder);
@@ -103,13 +144,16 @@ public class CommonlyAdapter<T, VH extends RecyclerView.ViewHolder> extends Recy
     }
 
     private void bind(VH holder, T data) {
-        List<DataBinder<T, VH>> dataBinders = this.dataBinders.get(holder.getItemViewType());
+        binds(this.dataBinders.get(holder.getItemViewType()), holder, data);
+        binds(this.dataBinders.get(ITEM_TYPE_ALL), holder, data);
+    }
+
+    private void binds(List<DataBinder<T, VH>> dataBinders, VH holder, T data) {
         if (CollectionUtils.nonEmpty(dataBinders)) {
             for (DataBinder<T, VH> binder : dataBinders) {
                 binder.bind(holder, data);
             }
         }
-
     }
 
     @Override

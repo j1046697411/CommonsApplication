@@ -27,9 +27,4 @@
             android:layout_height="wrap_content" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tv_test2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 </LinearLayout>
