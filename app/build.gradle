@@ -46,5 +46,6 @@ dependencies {
 
     implementation 'org.jzl.lang:commons:0.0.2'
     implementation 'org.jzl.android:android-commons:0.0.1'
+    implementation 'org.jzl.android.recyclerview:commonly-recyclerview:0.0.3'
 
 }

@@ -1,5 +1,7 @@
 package org.jzl.lang.util;
 
+import org.jzl.lang.fun.Supplier;
+
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
@@ -19,6 +21,11 @@ public final class ObjectUtils {
 
     public static <T> T get(T target, T def) {
         return target == null ? def : target;
+    }
+
+    public static <T> T get(T target, Supplier<T> def) {
+        ObjectUtils.requireNonNull(def, "Supplier");
+        return target == null ? def.get() : target;
     }
 
     public static boolean isEmpty(Object object) {

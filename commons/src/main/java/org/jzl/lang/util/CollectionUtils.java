@@ -1,8 +1,7 @@
 package org.jzl.lang.util;
 
-import org.jzl.lang.fun.Consumer;
 import org.jzl.lang.fun.Function;
-import org.jzl.lang.fun.IntConsumer;
+import org.jzl.lang.fun.Predicate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +36,22 @@ public final class CollectionUtils {
         return data instanceof ArrayList ? (ArrayList<T>) data : new ArrayList<>(data);
     }
 
+    public static <T, C extends Collection<T>> C trimAllNull(C collection) {
+        return trimAllIf(collection, ObjectUtils::isNull);
+    }
+
+    public static <T, C extends Collection<T>> C trimAllIf(C collection, Predicate<T> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (nonEmpty(collection)) {
+            ForeachUtils.eachIfIterator(collection, (t, remover) -> {
+                if (predicate.test(t)) {
+                    remover.remove();
+                }
+            });
+        }
+        return collection;
+    }
+
     public static <T, R, C extends Collection<R>> C map(Collection<T> request, C result, Function<T, R> mapper) {
         ObjectUtils.requireNonNull(result, "result");
         ObjectUtils.requireNonNull(mapper, "mapper");
@@ -66,24 +81,4 @@ public final class CollectionUtils {
             list.set(targetPosition, target);
         }
     }
-
-    public static <T> void each(List<T> list, IntConsumer<T> consumer) {
-        ObjectUtils.requireNonNull(consumer, "consumer");
-        if (nonEmpty(list)) {
-            int size = list.size();
-            for (int i = 0; i < size; i++) {
-                consumer.accept(i, list.get(i));
-            }
-        }
-    }
-
-    public static <T> void each(Collection<T> collection, Consumer<T> consumer) {
-        ObjectUtils.requireNonNull(consumer, "consumer");
-        if (nonEmpty(collection)) {
-            for (T t : collection) {
-                consumer.accept(t);
-            }
-        }
-    }
-
 }

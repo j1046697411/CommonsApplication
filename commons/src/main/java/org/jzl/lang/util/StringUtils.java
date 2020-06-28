@@ -1,9 +1,16 @@
 package org.jzl.lang.util;
 
+import org.jzl.lang.fun.Function;
+
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 个人常用的java StringUtils 工具类
+ */
+
 public final class StringUtils {
+
     private static final char[] LOWER_HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static final char[] UPPER_HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -24,6 +31,22 @@ public final class StringUtils {
 
     public static int length(CharSequence text) {
         return text == null ? 0 : text.length();
+    }
+
+    public static String trimIfEmpty(String text) {
+        return text == null ? EMPTY : text.trim();
+    }
+
+    public static String toUpperCaseIfEmpty(String text) {
+        return text == null ? EMPTY : text.toUpperCase();
+    }
+
+    public static String toLowerCaseIfEmpty(String text) {
+        return text == null ? EMPTY : text.toLowerCase();
+    }
+
+    public static String toIfEmpty(String text, String def, Function<String, String> mapper) {
+        return text == null ? def : ObjectUtils.get(mapper.apply(text), def);
     }
 
     @SafeVarargs
