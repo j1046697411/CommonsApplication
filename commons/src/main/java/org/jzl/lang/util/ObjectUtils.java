@@ -5,6 +5,7 @@ import org.jzl.lang.fun.Supplier;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 public final class ObjectUtils {
     private ObjectUtils() {
@@ -52,7 +53,7 @@ public final class ObjectUtils {
     }
 
     public static boolean equals(Object target1, Object target2) {
-        return target1 != null && target1.equals(target2);
+        return Objects.equals(target1, target2);
     }
 
     public static <T> T requireNonNull(T target, String message) {

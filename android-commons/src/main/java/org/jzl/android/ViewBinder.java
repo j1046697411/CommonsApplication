@@ -14,7 +14,9 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 
+import org.jzl.lang.fun.Consumer;
 import org.jzl.lang.util.ArrayUtils;
+import org.jzl.lang.util.ObjectUtils;
 
 public class ViewBinder implements ViewFinder {
 
@@ -89,12 +91,12 @@ public class ViewBinder implements ViewFinder {
         return this;
     }
 
-    public ViewBinder bindOnLongClickListener(@IdRes int id, View.OnLongClickListener clickListener) {
+    public ViewBinder bindLongClickListener(@IdRes int id, View.OnLongClickListener clickListener) {
         this.findViewById(id).setOnLongClickListener(clickListener);
         return this;
     }
 
-    public ViewBinder bindClickListeners(View.OnClickListener listener, int... ids) {
+    public ViewBinder bindClickListeners(View.OnClickListener listener,@IdRes int... ids) {
         if (ArrayUtils.nonEmpty(ids)) {
             for (int id : ids) {
                 this.findViewById(id).setOnClickListener(listener);
@@ -117,6 +119,25 @@ public class ViewBinder implements ViewFinder {
             for (int id : ids) {
                 findViewById(id).setOnLongClickListener(longClickListener);
             }
+        }
+        return this;
+    }
+
+    public ViewBinder bind(@IdRes int id, Consumer<ViewBinder> consumer) {
+        ObjectUtils.requireNonNull(consumer, "consumer");
+        return bindView(id, view -> {
+            ViewBinder viewBinder = (ViewBinder) view.getTag(R.id.tag_view_binder);
+            if (ObjectUtils.isNull(viewBinder)) {
+                viewBinder = ViewBinder.bind(view);
+                view.setTag(R.id.tag_view_binder, viewBinder);
+            }
+            consumer.accept(viewBinder);
+        });
+    }
+
+    public <V extends View> ViewBinder bindView(@IdRes int id, Consumer<V> consumer) {
+        if (ObjectUtils.nonNull(consumer)) {
+            consumer.accept(ObjectUtils.requireNonNull(this.findViewById(id), "view"));
         }
         return this;
     }

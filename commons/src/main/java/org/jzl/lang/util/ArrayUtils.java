@@ -1,8 +1,5 @@
 package org.jzl.lang.util;
 
-import org.jzl.lang.fun.IntBinaryConsumer;
-import org.jzl.lang.fun.IntConsumer;
-
 import java.lang.reflect.Array;
 
 public final class ArrayUtils {
@@ -42,8 +39,36 @@ public final class ArrayUtils {
         return array == null || array.length == 0;
     }
 
+    public static boolean nonEmpty(long[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(short[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(byte[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(char[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(boolean[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(float[] array) {
+        return array != null && array.length != 0;
+    }
+
+    public static boolean nonEmpty(double[] array) {
+        return array != null && array.length != 0;
+    }
+
     public static <T> boolean isEmpty(T[] array) {
-        return array == null || array.length == 0;
+        return array != null && array.length != 0;
     }
 
     public static <T> boolean nonEmpty(T[] array) {
@@ -81,21 +106,71 @@ public final class ArrayUtils {
         return false;
     }
 
-    public static <T> void each(T[] array, IntConsumer<T> consumer) {
-        ObjectUtils.requireNonNull(consumer, "consumer");
+    public static boolean contains(long[] array, long value) {
         if (nonEmpty(array)) {
-            for (int i = 0; i < array.length; i++) {
-                consumer.accept(i, array[i]);
+            for (long l : array) {
+                if (value == l) {
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    public static void each(int[] array, IntBinaryConsumer consumer) {
-        ObjectUtils.requireNonNull(consumer, "consumer");
+    public static boolean contains(byte[] array, byte value) {
         if (nonEmpty(array)) {
-            for (int i = 0; i < array.length; i++) {
-                consumer.accept(i, array[i]);
+            for (byte b : array) {
+                if (value == b) {
+                    return true;
+                }
             }
         }
+        return false;
     }
+
+    public static boolean contains(short[] array, short value) {
+        if (nonEmpty(array)) {
+            for (short item : array) {
+                if (value == item) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean contains(char[] array, char value) {
+        if (nonEmpty(array)) {
+            for (char c : array) {
+                if (value == c) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean contains(T[] objects, T object, boolean identity) {
+        if (nonEmpty(objects)) {
+            if (identity) {
+                for (T o : objects) {
+                    if (o == object) {
+                        return true;
+                    }
+                }
+            } else {
+                for (T o : objects) {
+                    if (ObjectUtils.equals(o, object)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean contains(T[] objects, T object) {
+        return contains(objects, object, false);
+    }
+
 }

@@ -8,6 +8,8 @@ import org.jzl.lang.fun.IntBinaryPredicate;
 import org.jzl.lang.fun.IntConsumer;
 import org.jzl.lang.fun.IntPredicate;
 import org.jzl.lang.fun.Predicate;
+import org.jzl.lang.fun.Supplier;
+import org.jzl.lang.util.holder.BinaryHolder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -116,36 +118,72 @@ public final class ForeachUtils {
     }
 
     public static <T> void each(Iterable<T> iterable, Consumer<T> consumer) {
-        ObjectUtils.requireNonNull(iterable, "iterable");
         ObjectUtils.requireNonNull(consumer, "consumer");
-
-        for (T t : iterable) {
-            consumer.accept(t);
-        }
-    }
-
-    public static <T> void each(Iterable<T> iterable, Predicate<T> predicate) {
-        ObjectUtils.requireNonNull(iterable, "iterable");
-        ObjectUtils.requireNonNull(predicate, "consumer");
-        for (T t : iterable) {
-            if (predicate.test(t)) {
-                return;
+        if (ObjectUtils.nonNull(iterable)) {
+            for (T t : iterable) {
+                consumer.accept(t);
             }
         }
     }
 
-    public static <T> void eachIfIterator(Iterable<T> iterable, BinaryConsumer<T, Remover> consumer) {
-        ObjectUtils.requireNonNull(iterable, "iterable");
-        each(iterable.iterator(), consumer);
+    public static <T> void eachIfBack(Iterable<T> iterable, Predicate<T> predicate) {
+        ObjectUtils.requireNonNull(predicate, "consumer");
+        if (ObjectUtils.nonNull(iterable)) {
+            for (T t : iterable) {
+                if (predicate.test(t)) {
+                    return;
+                }
+            }
+        }
     }
 
-    public static <T> void each(Iterator<T> iterator, BinaryConsumer<T, Remover> consumer) {
-        ObjectUtils.requireNonNull(consumer, "consumer");
-        ObjectUtils.requireNonNull(iterator, "iterator");
-        Remover remover = iterator::remove;
-        while (iterator.hasNext()) {
-            consumer.apply(iterator.next(), remover);
+    public static <T> void eachIfRemove(Iterable<T> iterable, BinaryConsumer<T, Remover> consumer) {
+        if (ObjectUtils.nonNull(iterable)) {
+            eachIfRemove(iterable.iterator(), consumer);
         }
+    }
+
+    public static <T> void eachIfRemove(Iterator<T> iterator, BinaryConsumer<T, Remover> consumer) {
+        ObjectUtils.requireNonNull(consumer, "consumer");
+        if (ObjectUtils.nonNull(iterator)) {
+            Remover remover = iterator::remove;
+            while (iterator.hasNext()) {
+                consumer.apply(iterator.next(), remover);
+            }
+        }
+    }
+
+    public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate, Supplier<T> defSupplier) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (ObjectUtils.nonNull(iterator)) {
+            while (iterator.hasNext()) {
+                T next = iterator.next();
+                if (predicate.test(next)) {
+                    return next;
+                }
+            }
+        }
+        return ObjectUtils.nonNull(defSupplier) ? defSupplier.get() : null;
+    }
+
+    public static <T> T findByOne(Iterable<T> iterable, Predicate<T> predicate, Supplier<T> defSupplier) {
+        if (ObjectUtils.nonNull(iterable)) {
+            return findByOne(iterable.iterator(), predicate, defSupplier);
+        } else {
+            return ObjectUtils.nonNull(defSupplier) ? defSupplier.get() : null;
+        }
+    }
+
+    public static <K, V> BinaryHolder<K, V> findByOne(Map<K, V> map, BinaryPredicate<K, V> predicate, Supplier<BinaryHolder<K, V>> defSupplier) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (MapUtils.nonEmpty(map)) {
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                if (predicate.test(entry.getKey(), entry.getValue())) {
+                    return BinaryHolder.of(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        return ObjectUtils.nonNull(defSupplier) ? defSupplier.get() : null;
     }
 
     public interface Remover {

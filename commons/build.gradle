@@ -19,7 +19,7 @@ publish {
     userOrg = 'j1046697411'//bintray.com的用户名
     groupId = 'org.jzl.lang'//一个唯一值，默认包名,生成的gradle依赖前缀
     artifactId = 'commons'//远程仓库包名称
-    publishVersion = '0.0.2'//版本号
+    publishVersion = '0.0.3'//版本号
     desc = '工具库'//描述，不重要
     website = siteUrl//引用github主页
     bintrayUser = user

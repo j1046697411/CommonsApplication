@@ -2,15 +2,63 @@ package org.jzl.lang.util;
 
 import org.jzl.lang.fun.Function;
 import org.jzl.lang.fun.Predicate;
+import org.jzl.lang.fun.Supplier;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public final class CollectionUtils {
 
     private CollectionUtils() {
+    }
+
+    public static <T> ArrayList<T> newArrayList() {
+        return new ArrayList<>();
+    }
+
+    public static <T> LinkedList<T> newLinkedList() {
+        return new LinkedList<>();
+    }
+
+    public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList() {
+        return new CopyOnWriteArrayList<>();
+    }
+
+    public static <T> HashSet<T> newHashSet() {
+        return new HashSet<>();
+    }
+
+    public static <T> LinkedHashSet<T> newLinkedHashSet() {
+        return new LinkedHashSet<>();
+    }
+
+    public static <T> CopyOnWriteArraySet<T> newCopyOnWriteArraySet() {
+        return new CopyOnWriteArraySet<>();
+    }
+
+    public static <E extends Enum<E>> EnumSet<E> newEnumSet(Class<E> type) {
+        return EnumSet.allOf(type);
+    }
+
+    public static BitSet newBitSet() {
+        return new BitSet();
+    }
+
+    public static <T> T get(List<T> list, int index, Supplier<T> supplier) {
+        return notLimit(list, index) ? supplier.get() : list.get(index);
+    }
+
+    public static <T> T get(List<T> list, int index, T def) {
+        return notLimit(list, index) ? def : list.get(index);
     }
 
     public static boolean isEmpty(Collection<?> collection) {
@@ -43,7 +91,7 @@ public final class CollectionUtils {
     public static <T, C extends Collection<T>> C trimAllIf(C collection, Predicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (nonEmpty(collection)) {
-            ForeachUtils.eachIfIterator(collection, (t, remover) -> {
+            ForeachUtils.eachIfRemove(collection, (t, remover) -> {
                 if (predicate.test(t)) {
                     remover.remove();
                 }
@@ -64,21 +112,34 @@ public final class CollectionUtils {
         return result;
     }
 
-    public static <T> void move(List<T> list, int position, int targetPosition) {
+    public static <T> void move(List<T> list, int fromPosition, int toPosition) {
         if (nonEmpty(list)) {
-            T target = list.get(position);
-            if (position < targetPosition) {
-
-                for (int i = position; i < targetPosition; i++) {
-                    list.set(i, list.get(i + 1));
+            if (fromPosition < toPosition) {
+                for (int i = fromPosition; i < toPosition; i++) {
+                    Collections.swap(list, i, i + 1);
                 }
 
             } else {
-                for (int i = position; i > targetPosition; i--) {
-                    list.set(i, list.get(i - 1));
+                for (int i = fromPosition; i > toPosition; i--) {
+                    Collections.swap(list, i, i - 1);
                 }
             }
-            list.set(targetPosition, target);
         }
+    }
+
+    public static int length(Collection<?> collection) {
+        return isEmpty(collection) ? 0 : collection.size();
+    }
+
+    public static <T> List<T> subList(List<T> list, int fromPosition, int toPosition) {
+        return isEmpty(list) ? new ArrayList<>() : list.subList(fromPosition, toPosition);
+    }
+
+    public static boolean isLimit(Collection<?> collection, int index) {
+        return MathUtils.isLimit(index, 0, length(collection) - 1);
+    }
+
+    public static boolean notLimit(Collection<?> collection, int index) {
+        return !isLimit(collection, index);
     }
 }

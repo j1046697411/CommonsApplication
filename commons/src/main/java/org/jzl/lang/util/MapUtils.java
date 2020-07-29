@@ -1,6 +1,5 @@
 package org.jzl.lang.util;
 
-import org.jzl.lang.fun.BinaryConsumer;
 import org.jzl.lang.util.map.FilterMap;
 import org.jzl.lang.util.map.MapBuilder;
 
@@ -31,10 +30,6 @@ public final class MapUtils {
 
     public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<>();
-    }
-
-    public static <K, V> void each(BinaryConsumer<K, V> consumer){
-        ObjectUtils.requireNonNull(consumer, "consumer");
     }
 
 }
