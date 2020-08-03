@@ -54,22 +54,28 @@ public final class StringJoiner implements CharSequence, Serializable, Builder<S
 
     @SafeVarargs
     public final <T> StringJoiner joins(T... texts) {
-        for (T text : texts) {
-            prepareBuilder().append(text);
+        if (ArrayUtils.nonEmpty(texts)) {
+            for (T text : texts) {
+                prepareBuilder().append(text);
+            }
         }
         return this;
     }
 
     public <T> StringJoiner joins(Collection<T> texts) {
-        for (T text : texts) {
-            prepareBuilder().append(text);
+        if (CollectionUtils.nonEmpty(texts)) {
+            for (T text : texts) {
+                prepareBuilder().append(text);
+            }
         }
         return this;
     }
 
     public <K, V> StringJoiner joins(CharSequence delimiter, Map<K, V> map) {
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            prepareBuilder().append(entry.getKey()).append(delimiter).append(entry.getValue());
+        if (MapUtils.nonEmpty(map)) {
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                prepareBuilder().append(entry.getKey()).append(delimiter).append(entry.getValue());
+            }
         }
         return this;
     }

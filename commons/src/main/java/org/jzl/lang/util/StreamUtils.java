@@ -91,6 +91,15 @@ public final class StreamUtils {
         return out instanceof BufferedOutputStream ? (BufferedOutputStream) out : new BufferedOutputStream(out);
     }
 
+    public static void flush(Flushable flushable){
+        if (ObjectUtils.nonNull(flushable)){
+            try {
+                flushable.flush();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
     public static void close(Closeable cls) {
         if (cls != null) {
             try {

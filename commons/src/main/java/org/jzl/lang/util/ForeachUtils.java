@@ -153,6 +153,14 @@ public final class ForeachUtils {
         }
     }
 
+    public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate) {
+        return findByOne(iterator, predicate, (Supplier<T>) null);
+    }
+
+    public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate, T def) {
+        return findByOne(iterator, predicate, (Supplier<T>) () -> def);
+    }
+
     public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate, Supplier<T> defSupplier) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (ObjectUtils.nonNull(iterator)) {
@@ -172,6 +180,33 @@ public final class ForeachUtils {
         } else {
             return ObjectUtils.nonNull(defSupplier) ? defSupplier.get() : null;
         }
+    }
+
+    public static <K, V> V findByOneValue(Map<K, V> map, BinaryPredicate<K, V> predicate) {
+        return findByOneValue(map, predicate, (Supplier<V>) null);
+    }
+
+    public static <K, V> V findByOneValue(Map<K, V> map, BinaryPredicate<K, V> predicate, V def) {
+        return findByOneValue(map, predicate, (Supplier<V>) () -> def);
+    }
+
+    public static <K, V> V findByOneValue(Map<K, V> map, BinaryPredicate<K, V> predicate, Supplier<V> defSupplier) {
+        if (MapUtils.nonEmpty(map)) {
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                if (predicate.test(entry.getKey(), entry.getValue())) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return ObjectUtils.nonNull(defSupplier) ? defSupplier.get() : null;
+    }
+
+    public static <K, V> BinaryHolder<K, V> findByOne(Map<K, V> map, BinaryPredicate<K, V> predicate) {
+        return findByOne(map, predicate, null);
+    }
+
+    public static <K, V> BinaryHolder<K, V> findByOne(Map<K, V> map, BinaryPredicate<K, V> predicate, K key, V value) {
+        return findByOne(map, predicate, () -> BinaryHolder.of(key, value));
     }
 
     public static <K, V> BinaryHolder<K, V> findByOne(Map<K, V> map, BinaryPredicate<K, V> predicate, Supplier<BinaryHolder<K, V>> defSupplier) {

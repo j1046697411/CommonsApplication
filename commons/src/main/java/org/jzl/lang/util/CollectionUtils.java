@@ -127,7 +127,7 @@ public final class CollectionUtils {
         }
     }
 
-    public static int length(Collection<?> collection) {
+    public static int size(Collection<?> collection) {
         return isEmpty(collection) ? 0 : collection.size();
     }
 
@@ -136,7 +136,7 @@ public final class CollectionUtils {
     }
 
     public static boolean isLimit(Collection<?> collection, int index) {
-        return MathUtils.isLimit(index, 0, length(collection) - 1);
+        return MathUtils.isLimit(index, 0, size(collection) - 1);
     }
 
     public static boolean notLimit(Collection<?> collection, int index) {

@@ -76,7 +76,7 @@ public final class StringUtils {
 
     public static String toHexString(String delimiter, byte[] bytes, boolean isUpper) {
         StringJoiner joiner = joiner(delimiter);
-        char[] chars = ThreadLocals.getChars();
+        char[] chars = new char[2];
         char[] hexChars = isUpper ? UPPER_HEX_CHARS : LOWER_HEX_CHARS;
         for (byte b : bytes) {
             int value = b & 0xff;
@@ -87,7 +87,11 @@ public final class StringUtils {
         return joiner.toString();
     }
 
-    public static String toHexString(byte[] bytes) {
+    public static String toUpperHexString(byte[] bytes) {
         return toHexString(EMPTY, bytes, true);
+    }
+
+    public static String toLowerHexString(byte[] bytes) {
+        return toHexString(EMPTY, bytes, false);
     }
 }
