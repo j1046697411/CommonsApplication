@@ -2,12 +2,14 @@ package org.jzl.lang.util.datablcok;
 
 
 import org.jzl.lang.util.CollectionUtils;
+import org.jzl.lang.util.ForeachUtils;
 import org.jzl.lang.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,12 +52,7 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
     }
 
     private DataBlock<T> findDataBlock(DataBlock.PositionType positionType, int blockId) {
-        for (DataBlock<T> dataBlock : this.dataBlocks) {
-            if (dataBlock.getPositionType() == positionType && dataBlock.getBlockId() == blockId) {
-                return dataBlock;
-            }
-        }
-        return null;
+        return ForeachUtils.findByOne(dataBlocks, dataBlock -> isDataBlock(dataBlock, positionType, blockId));
     }
 
     private DataBlock<T> findDataBlockByPosition(int position) {
@@ -87,6 +84,11 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
             }
         }
         return null;
+    }
+
+    @Override
+    public Set<DataBlock<T>> dataBlocks() {
+        return this.dataBlocks;
     }
 
     @Override
@@ -156,6 +158,40 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
     @Override
     public void addAllToContent(Collection<T> collection) {
         lastContentDataBlock().addAll(collection);
+    }
+
+    @Override
+    public DataBlock<T> removeDataBlock(DataBlock.PositionType positionType, int blockId) {
+        DataBlock<T> dataBlock = findDataBlock(positionType, blockId);
+        if (CollectionUtils.nonEmpty(dataBlock)) {
+            removeDataBlock(dataBlock);
+        }
+        return dataBlock;
+    }
+
+    @Override
+    public boolean removeDataBlock(DataBlock<T> dataBlock) {
+        if (CollectionUtils.nonEmpty(dataBlock)){
+            int startPosition = dataBlock.startPosition();
+            int size = dataBlock.size();
+            DataBlock<T> retDataBlock = ForeachUtils.removeByOne(this.dataBlocks, target -> target == dataBlock);
+            if (CollectionUtils.nonEmpty(retDataBlock)) {
+                dataObservers.onRemoved(startPosition, size);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void removeDataBlockByPositionType(DataBlock.PositionType positionType) {
+        ForeachUtils.remove(this.dataBlocks, dataBlock -> dataBlock.getPositionType() == positionType);
+        dataObservers.onAllChanged();
+    }
+
+    @Override
+    public DataBlock<T> findDataBlockByIndex(int index) {
+        return findDataBlockByPosition(index);
     }
 
     public T set(int position, T t) {
@@ -275,6 +311,10 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
         CollectionUtils.move(this, fromPosition, toPosition);
         enableDataObserver();//开启事件
         dataObservers.onMoved(fromPosition, toPosition);
+    }
+
+    private boolean isDataBlock(DataBlock<T> dataBlock, DataBlock.PositionType positionType, int dataBlockId) {
+        return ObjectUtils.nonNull(dataBlock) && dataBlock.getBlockId() == dataBlockId && dataBlock.getPositionType() == positionType;
     }
 
     @Override

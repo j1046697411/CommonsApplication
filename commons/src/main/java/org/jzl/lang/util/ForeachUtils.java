@@ -153,8 +153,71 @@ public final class ForeachUtils {
         }
     }
 
+    public static <T> T removeByOne(Iterable<T> iterable, Predicate<T> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (ObjectUtils.nonNull(iterable)) {
+            for (T next : iterable) {
+                if (predicate.test(next)) {
+                    return next;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> T removeByOne(Iterator<T> iterator, Predicate<T> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (ObjectUtils.nonNull(iterator)) {
+            if (iterator.hasNext()) {
+                T next = iterator.next();
+                if (predicate.test(next)) {
+                    return next;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <K, V> BinaryHolder<K, V> removeByOne(Map<K, V> map, BinaryPredicate<K, V> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (MapUtils.nonEmpty(map)) {
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                if (predicate.test(entry.getKey(), entry.getValue())) {
+                    return BinaryHolder.of(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> void remove(Iterator<T> iterator, Predicate<T> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (ObjectUtils.nonNull(iterator)) {
+            while (iterator.hasNext()) {
+                if (predicate.test(iterator.next())) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    public static <T> void remove(Iterable<T> iterable, Predicate<T> predicate) {
+        remove(iterable.iterator(), predicate);
+    }
+
+    public static <K, V> void remove(Map<K, V> map, BinaryPredicate<K, V> predicate) {
+        ObjectUtils.requireNonNull(predicate, "predicate");
+        if (MapUtils.nonEmpty(map)) {
+            remove(map.entrySet(), target -> predicate.test(target.getKey(), target.getValue()));
+        }
+    }
+
     public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate) {
         return findByOne(iterator, predicate, (Supplier<T>) null);
+    }
+
+    public static <T> T findByOne(Iterable<T> iterable, Predicate<T> predicate) {
+        return findByOne(iterable, predicate, null);
     }
 
     public static <T> T findByOne(Iterator<T> iterator, Predicate<T> predicate, T def) {

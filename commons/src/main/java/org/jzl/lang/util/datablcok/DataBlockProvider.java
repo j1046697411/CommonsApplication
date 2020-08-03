@@ -2,6 +2,7 @@ package org.jzl.lang.util.datablcok;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface DataBlockProvider<T> extends DataSource<T> {
 
@@ -37,4 +38,13 @@ public interface DataBlockProvider<T> extends DataSource<T> {
 
     void addAllToContent(Collection<T> collection);
 
+    Set<DataBlock<T>> dataBlocks();
+
+    DataBlock<T> removeDataBlock(DataBlock.PositionType positionType, int blockId);
+
+    boolean removeDataBlock(DataBlock<T> dataBlock);
+
+    void removeDataBlockByPositionType(DataBlock.PositionType positionType);
+
+    DataBlock<T> findDataBlockByIndex(int index);
 }
