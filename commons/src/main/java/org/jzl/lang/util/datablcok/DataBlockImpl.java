@@ -15,8 +15,8 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     private final int blockId;
     private final PositionType positionType;
     private final List<T> data = new ArrayList<>();
-    private final DataBlockProvider<T> dataBlockProvider;
-    private final DataObserver dataObserver;
+    private DataBlockProvider<T> dataBlockProvider;
+    private DataObserver dataObserver;
     private int startPosition = 0;
     private AtomicBoolean isDirtyData = new AtomicBoolean(false);
 
@@ -40,10 +40,18 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
 
     @Override
     public int startPosition() {
-        if (isDirtyData.compareAndSet(true, false)) {
+        if (isDirtyData.compareAndSet(true, false) && ObjectUtils.nonNull(dataBlockProvider)) {
             this.startPosition = dataBlockProvider.getDataBlockStartPosition(this);
         }
         return startPosition;
+    }
+
+    @Override
+    public void disassociate() {
+        this.dataObserver = null;
+        this.dataBlockProvider.removeDirtyAble(this);
+        this.dataBlockProvider = null;
+        this.startPosition = 0;
     }
 
     @Override
@@ -54,7 +62,7 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     @Override
     public boolean add(T t) {
         data.add(t);
-        dataObserver.onInserted(size() - 1 + startPosition(), 1);
+        onInserted(size() - 1 + startPosition(), 1);
         return true;
     }
 
@@ -72,7 +80,7 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
         int size = size();
         boolean is = data.addAll(collection);
         if (is) {
-            dataObserver.onInserted(size + startPosition(), collection.size());
+            onInserted(size + startPosition(), collection.size());
         }
         return is;
     }
@@ -81,7 +89,7 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     public boolean addAll(int position, Collection<? extends T> collection) {
         boolean is = data.addAll(position, collection);
         if (is) {
-            dataObserver.onInserted(position + startPosition(), collection.size());
+            onInserted(position + startPosition(), collection.size());
         }
         return is;
     }
@@ -90,7 +98,7 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     public boolean removeAll(Collection<?> collection) {
         boolean is = data.removeAll(collection);
         if (is) {
-            dataObserver.onAllChanged();
+            onAllChanged();
         }
         return is;
     }
@@ -99,27 +107,27 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     public void clear() {
         int size = size();
         data.clear();
-        dataObserver.onRemoved(0, size);
+        onRemoved(startPosition(), size);
     }
 
     @Override
     public T set(int position, T t) {
         T data = this.data.set(position, t);
-        dataObserver.onChanged(position + startPosition());
+        onChanged(position + startPosition());
         return data;
     }
 
     @Override
     public void add(int position, T t) {
         data.add(position, t);
-        dataObserver.onInserted(position + startPosition(), 1);
+        onInserted(position + startPosition(), 1);
     }
 
     @Override
     public T remove(int position) {
         T data = this.data.remove(position);
         if (ObjectUtils.nonNull(data)) {
-            dataObserver.onRemoved(position + startPosition(), 1);
+            onRemoved(position + startPosition(), 1);
         }
         return data;
     }
@@ -127,12 +135,42 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     @Override
     public void move(int fromPosition, int toPosition) {
         CollectionUtils.move(this.data, fromPosition, toPosition);
-        dataObserver.onMoved(fromPosition, toPosition);
+        onMoved(fromPosition + startPosition(), toPosition + startPosition());
     }
 
     @Override
     public void dirty() {
         isDirtyData.set(true);
+    }
+
+    private void onInserted(int position, int count) {
+        if (ObjectUtils.nonNull(dataObserver)) {
+            dataObserver.onInserted(position, count);
+        }
+    }
+
+    private void onChanged(int position) {
+        if (ObjectUtils.nonNull(dataObserver)) {
+            dataObserver.onChanged(position);
+        }
+    }
+
+    private void onAllChanged() {
+        if (ObjectUtils.nonNull(dataObserver)) {
+            dataObserver.onAllChanged();
+        }
+    }
+
+    private void onRemoved(int position, int count) {
+        if (ObjectUtils.nonNull(dataObserver)) {
+            dataObserver.onRemoved(position, count);
+        }
+    }
+
+    private void onMoved(int fromPosition, int toPosition) {
+        if (ObjectUtils.nonNull(dataObserver)) {
+            dataObserver.onMoved(fromPosition, toPosition);
+        }
     }
 
     @Override

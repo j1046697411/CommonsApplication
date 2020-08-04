@@ -61,6 +61,13 @@ public class DataBlockMain {
         System.out.println(dataBlockProvider.lastContentDataBlock());
 
         ListIterator<String> iterator = dataBlockProvider.listIterator(5);
+        dataBlock3.clear();
+        dataBlockProvider.removeDataBlock(DataBlock.PositionType.CONTENT, 1);
+        dataBlockProvider.removeDataBlock(dataBlock);
+        System.out.println(dataBlockProvider + "");
+        dataBlockProvider.removeDataBlockByPositionType(DataBlock.PositionType.CONTENT);
+        System.out.println(dataBlockProvider + "");
+
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
             iterator.remove();

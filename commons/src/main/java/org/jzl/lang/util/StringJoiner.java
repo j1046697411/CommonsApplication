@@ -5,7 +5,6 @@ import org.jzl.lang.builder.Builder;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 public final class StringJoiner implements CharSequence, Serializable, Builder<String> {
 
@@ -21,9 +20,9 @@ public final class StringJoiner implements CharSequence, Serializable, Builder<S
     }
 
     StringJoiner(CharSequence prefix, CharSequence delimiter, CharSequence suffix) {
-        Objects.requireNonNull(prefix);
-        Objects.requireNonNull(delimiter);
-        Objects.requireNonNull(suffix);
+        ObjectUtils.requireNonNull(prefix);
+        ObjectUtils.requireNonNull(delimiter);
+        ObjectUtils.requireNonNull(suffix);
 
         this.prefix = prefix;
         this.delimiter = delimiter;

@@ -156,11 +156,7 @@ public final class ForeachUtils {
     public static <T> T removeByOne(Iterable<T> iterable, Predicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (ObjectUtils.nonNull(iterable)) {
-            for (T next : iterable) {
-                if (predicate.test(next)) {
-                    return next;
-                }
-            }
+            return removeByOne(iterable.iterator(), predicate);
         }
         return null;
     }
@@ -168,9 +164,10 @@ public final class ForeachUtils {
     public static <T> T removeByOne(Iterator<T> iterator, Predicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (ObjectUtils.nonNull(iterator)) {
-            if (iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 T next = iterator.next();
                 if (predicate.test(next)) {
+                    iterator.remove();
                     return next;
                 }
             }
@@ -181,10 +178,9 @@ public final class ForeachUtils {
     public static <K, V> BinaryHolder<K, V> removeByOne(Map<K, V> map, BinaryPredicate<K, V> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (MapUtils.nonEmpty(map)) {
-            for (Map.Entry<K, V> entry : map.entrySet()) {
-                if (predicate.test(entry.getKey(), entry.getValue())) {
-                    return BinaryHolder.of(entry.getKey(), entry.getValue());
-                }
+            Map.Entry<K, V> retEntry = removeByOne(map.entrySet(), entry -> predicate.test(entry.getKey(), entry.getValue()));
+            if (ObjectUtils.nonNull(retEntry)) {
+                return BinaryHolder.of(retEntry.getKey(), retEntry.getValue());
             }
         }
         return null;
@@ -202,7 +198,9 @@ public final class ForeachUtils {
     }
 
     public static <T> void remove(Iterable<T> iterable, Predicate<T> predicate) {
-        remove(iterable.iterator(), predicate);
+        if (ObjectUtils.nonNull(iterable)) {
+            remove(iterable.iterator(), predicate);
+        }
     }
 
     public static <K, V> void remove(Map<K, V> map, BinaryPredicate<K, V> predicate) {

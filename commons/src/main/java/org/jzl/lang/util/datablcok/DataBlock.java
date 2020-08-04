@@ -8,6 +8,8 @@ public interface DataBlock<T> extends DataSource<T>{
 
     int startPosition();
 
+    void disassociate();
+
     enum PositionType {
 
         HEADER(1), CONTENT(2), FOOTER(3);
