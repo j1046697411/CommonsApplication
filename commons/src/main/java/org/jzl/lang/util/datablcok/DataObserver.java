@@ -10,5 +10,7 @@ public interface DataObserver {
 
     void onChanged(int position);
 
+    void onBeforeAllChanged();
+
     void onAllChanged();
 }

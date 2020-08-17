@@ -20,10 +20,6 @@ public interface DataBlockProvider<T> extends DataSource<T> {
 
     void removeDirtyAble(DirtyAble dirtyAble);
 
-    void enableDataObserver();
-
-    void disableDataObserver();
-
     DataBlock<T> defaultDataBlock();
 
     DataBlock<T> lastContentDataBlock();

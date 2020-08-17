@@ -10,9 +10,10 @@ class DataObservers implements DataObserver, DirtyAble {
 
     private final Set<DataObserver> dataObservers = new HashSet<>();
     private final Set<DirtyAble> dirtyAbles = new HashSet<>();
-    private final AtomicInteger semaphore = new AtomicInteger(0);
+    private ThreadLocal<AtomicInteger> semaphore = new ThreadLocal<>();
 
     public DataObservers() {
+        semaphore.set(new AtomicInteger(0));
     }
 
     @Override
@@ -48,6 +49,13 @@ class DataObservers implements DataObserver, DirtyAble {
     }
 
     @Override
+    public void onBeforeAllChanged() {
+        if (isEnable()) {
+            ForeachUtils.each(dataObservers, DataObserver::onBeforeAllChanged);
+        }
+    }
+
+    @Override
     public void onAllChanged() {
         dirty();
         if (isEnable()) {
@@ -55,18 +63,21 @@ class DataObservers implements DataObserver, DirtyAble {
         }
     }
 
-    private boolean isEnable(){
-        return semaphore.get() == 0;
+    private boolean isEnable() {
+        return getSemaphore().get() == 0;
     }
 
     public void enable() {
-        semaphore.incrementAndGet();
+        getSemaphore().incrementAndGet();
     }
 
     public void disable() {
-        semaphore.decrementAndGet();
+        getSemaphore().decrementAndGet();
     }
 
+    public AtomicInteger getSemaphore() {
+        return semaphore.get();
+    }
 
     public void addDataObserver(DataObserver dataObserver) {
         dataObservers.add(dataObserver);

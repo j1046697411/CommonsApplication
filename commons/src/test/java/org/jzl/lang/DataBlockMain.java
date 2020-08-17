@@ -34,6 +34,11 @@ public class DataBlockMain {
             }
 
             @Override
+            public void onBeforeAllChanged() {
+                System.out.println("onBeforeAllChanged");//全部更新前回调的方法
+            }
+
+            @Override
             public void onAllChanged() {
                 System.out.println("onAllChanged");
             }

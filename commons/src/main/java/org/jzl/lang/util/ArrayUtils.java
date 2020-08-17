@@ -39,6 +39,10 @@ public final class ArrayUtils {
         return array == null || array.length == 0;
     }
 
+    public static <T> boolean isEmpty(T[] array) {
+        return array == null || array.length == 0;
+    }
+
     public static boolean nonEmpty(long[] array) {
         return array != null && array.length != 0;
     }
@@ -67,10 +71,6 @@ public final class ArrayUtils {
         return array != null && array.length != 0;
     }
 
-    public static <T> boolean isEmpty(T[] array) {
-        return array != null && array.length != 0;
-    }
-
     public static <T> boolean nonEmpty(T[] array) {
         return array != null && array.length > 0;
     }
@@ -80,7 +80,7 @@ public final class ArrayUtils {
     }
 
     public static boolean isEmpty(Object array) {
-        return array == null || array.getClass().isArray() || Array.getLength(array) == 0;
+        return array == null || !array.getClass().isArray() || Array.getLength(array) == 0;
     }
 
     @SuppressWarnings("unchecked")

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.util.SparseArray;
 import android.view.View;
 
+import org.jzl.lang.util.ObjectUtils;
+
 import java.util.Objects;
 
 public final class ViewFinders {
@@ -58,7 +60,7 @@ public final class ViewFinders {
         private View root;
 
         RootViewFinder(View root) {
-            this.root = Objects.requireNonNull(root);
+            this.root = ObjectUtils.requireNonNull(root);
         }
 
         @Override
@@ -72,7 +74,7 @@ public final class ViewFinders {
         private Dialog dialog;
 
         DialogViewFinder(Dialog dialog) {
-            this.dialog = Objects.requireNonNull(dialog);
+            this.dialog = ObjectUtils.requireNonNull(dialog);
         }
 
         @Override
@@ -87,7 +89,7 @@ public final class ViewFinders {
         private ViewFinder sourceViewFinder;
 
         CacheViewFinder(ViewFinder sourceViewFinder) {
-            this.sourceViewFinder = Objects.requireNonNull(sourceViewFinder);
+            this.sourceViewFinder = ObjectUtils.requireNonNull(sourceViewFinder);
             this.cacheViews = new SparseArray<>();
         }
 

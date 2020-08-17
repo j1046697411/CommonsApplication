@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import org.jzl.lang.fun.Consumer;
 import org.jzl.lang.util.ArrayUtils;
 import org.jzl.lang.util.ObjectUtils;
 
-public class ViewBinder implements ViewFinder {
+public final class ViewBinder implements ViewFinder {
 
     private ViewFinder finder;
 
@@ -96,11 +97,46 @@ public class ViewBinder implements ViewFinder {
         return this;
     }
 
-    public ViewBinder bindClickListeners(View.OnClickListener listener,@IdRes int... ids) {
+    public ViewBinder bindClickListeners(View.OnClickListener listener, @IdRes int... ids) {
         if (ArrayUtils.nonEmpty(ids)) {
             for (int id : ids) {
                 this.findViewById(id).setOnClickListener(listener);
             }
+        }
+        return this;
+    }
+
+    public ViewBinder setClickable(@IdRes int id, boolean clickable){
+        findViewById(id).setClickable(clickable);
+        return this;
+    }
+
+    public ViewBinder setFocusable(@IdRes int id, boolean focusable){
+        findViewById(id).setFocusable(focusable);
+        return this;
+    }
+
+    public ViewBinder addOnLayoutChangeListener(@IdRes int id, View.OnLayoutChangeListener layoutChangeListener){
+        if (ObjectUtils.nonNull(layoutChangeListener)){
+            findViewById(id).addOnLayoutChangeListener(layoutChangeListener);
+        }
+        return this;
+    }
+
+    public ViewBinder addOnAttachStateChangeListener(@IdRes int id, View.OnAttachStateChangeListener attachStateChangeListener){
+        if (ObjectUtils.nonNull(attachStateChangeListener)){
+            findViewById(id).addOnAttachStateChangeListener(attachStateChangeListener);
+        }
+        return this;
+    }
+
+    @SuppressWarnings("all")
+    public <LP extends ViewGroup.LayoutParams> ViewBinder updateLayoutParams(@IdRes int id, Consumer<LP> consumer) {
+        if (ObjectUtils.nonNull(consumer)) {
+            ViewGroup viewGroup = findViewById(id);
+            LP layoutParams = (LP) viewGroup.getLayoutParams();
+            consumer.accept(layoutParams);
+            viewGroup.setLayoutParams(layoutParams);
         }
         return this;
     }

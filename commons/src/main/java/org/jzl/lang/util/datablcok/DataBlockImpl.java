@@ -96,6 +96,7 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
 
     @Override
     public boolean removeAll(Collection<?> collection) {
+        onBeforeAllChanged();
         boolean is = data.removeAll(collection);
         if (is) {
             onAllChanged();
@@ -158,6 +159,12 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     private void onAllChanged() {
         if (ObjectUtils.nonNull(dataObserver)) {
             dataObserver.onAllChanged();
+        }
+    }
+
+    private void onBeforeAllChanged(){
+        if (ObjectUtils.nonNull(dataObserver)){
+            dataObserver.onBeforeAllChanged();
         }
     }
 

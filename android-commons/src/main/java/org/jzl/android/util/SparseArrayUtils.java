@@ -19,7 +19,6 @@ public class SparseArrayUtils {
     }
 
     public static <E> void puts(SparseArray<E> array1, SparseArray<E> array2) {
-        ObjectUtils.requireNonNull(array1);
         if (nonEmpty(array2)) {
             int size = array2.size();
             for (int i = 0; i < size; i++) {

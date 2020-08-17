@@ -128,13 +128,11 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
         dataObservers.removeDirtyAble(dirtyAble);
     }
 
-    @Override
-    public void enableDataObserver() {
+    private void enableDataObserver() {
         dataObservers.enable();
     }
 
-    @Override
-    public void disableDataObserver() {
+    private void disableDataObserver() {
         dataObservers.disable();
     }
 
@@ -191,6 +189,7 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
 
     @Override
     public void removeDataBlockByPositionType(DataBlock.PositionType positionType) {
+        dataObservers.onBeforeAllChanged();
         ForeachUtils.remove(this.dataBlocks, dataBlock -> {
             if (dataBlock.getPositionType() == positionType) {
                 dataBlock.disassociate();
@@ -275,6 +274,7 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
 
     @Override
     public boolean removeAll(Collection<?> collection) {
+        dataObservers.onBeforeAllChanged();
         disableDataObserver();
         for (DataBlock<T> dataBlock : dataBlocks) {
             dataBlock.removeAll(collection);
