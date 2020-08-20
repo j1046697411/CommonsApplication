@@ -140,6 +140,14 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
     }
 
     @Override
+    public void replaceAll(Collection<T> newData) {
+        onBeforeAllChanged();
+        this.data.clear();
+        this.addAll(newData);
+        onAllChanged();
+    }
+
+    @Override
     public void dirty() {
         isDirtyData.set(true);
     }
@@ -162,8 +170,8 @@ class DataBlockImpl<T> extends AbstractDataSource<T> implements DataBlock<T>, Da
         }
     }
 
-    private void onBeforeAllChanged(){
-        if (ObjectUtils.nonNull(dataObserver)){
+    private void onBeforeAllChanged() {
+        if (ObjectUtils.nonNull(dataObserver)) {
             dataObserver.onBeforeAllChanged();
         }
     }

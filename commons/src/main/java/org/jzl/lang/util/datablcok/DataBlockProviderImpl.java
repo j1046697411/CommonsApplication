@@ -188,6 +188,15 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
     }
 
     @Override
+    public void removeAllData() {
+        int size = size();
+        disableDataObserver();
+        ForeachUtils.each(this.dataBlocks, List::clear);
+        enableDataObserver();
+        dataObservers.onRemoved(0, size);
+    }
+
+    @Override
     public void removeDataBlockByPositionType(DataBlock.PositionType positionType) {
         dataObservers.onBeforeAllChanged();
         ForeachUtils.remove(this.dataBlocks, dataBlock -> {
@@ -294,7 +303,7 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
         dataBlocks.clear();
         oldData.clear();
         enableDataObserver();
-        dataObservers.onRemoved(0, size - 1);
+        dataObservers.onRemoved(0, size);
     }
 
     protected List<T> list() {
@@ -323,6 +332,16 @@ class DataBlockProviderImpl<T> extends AbstractDataSource<T> implements DataBloc
         CollectionUtils.move(this, fromPosition, toPosition);
         enableDataObserver();//开启事件
         dataObservers.onMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void replaceAll(Collection<T> newData) {
+        dataObservers.onBeforeAllChanged();
+        disableDataObserver();
+        removeAllData();
+        addAll(newData);
+        enableDataObserver();
+        dataObservers.onAllChanged();
     }
 
     private boolean isDataBlock(DataBlock<T> dataBlock, DataBlock.PositionType positionType, int dataBlockId) {

@@ -40,6 +40,8 @@ public interface DataBlockProvider<T> extends DataSource<T> {
 
     boolean removeDataBlock(DataBlock<T> dataBlock);
 
+    void removeAllData();
+
     void removeDataBlockByPositionType(DataBlock.PositionType positionType);
 
     DataBlock<T> findDataBlockByIndex(int index);
