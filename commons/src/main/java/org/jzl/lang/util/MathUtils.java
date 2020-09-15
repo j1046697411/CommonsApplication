@@ -37,11 +37,27 @@ public class MathUtils {
         return value >= min && value <= max;
     }
 
-    public static boolean equal(float value1, float value2, float offsetValue){
+    public static boolean equal(float value1, float value2, float offsetValue) {
         return Math.abs(value1 - value2) <= offsetValue;
     }
 
-    public static boolean equal(double value1, double value2, double offsetValue){
+    public static boolean equal(double value1, double value2, double offsetValue) {
         return Math.abs(value1 - value2) <= offsetValue;
+    }
+
+    public static boolean isZero(float value, float offsetValue) {
+        return equal(value, 0, offsetValue);
+    }
+
+    public static boolean isZero(float value) {
+        return equal(value, 0, 0.000001f);
+    }
+
+    public static boolean isZero(double value, float offsetValue) {
+        return equal(value, 0, offsetValue);
+    }
+
+    public static boolean isZero(double value) {
+        return equal(value, 0, 0.000000000001);
     }
 }

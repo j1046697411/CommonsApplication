@@ -3,14 +3,13 @@ package org.jzl.android.util;
 import android.util.SparseArray;
 
 import org.jzl.lang.util.ArrayUtils;
-import org.jzl.lang.util.ObjectUtils;
 
 public class SparseArrayUtils {
 
     private SparseArrayUtils() {
     }
 
-    public static <E> void puts(SparseArray<E> array, E data, int... keys) {
+    public static <E> void merge(SparseArray<E> array, E data, int... keys) {
         if (ArrayUtils.nonEmpty(keys)) {
             for (int key : keys) {
                 array.put(key, data);
@@ -18,7 +17,7 @@ public class SparseArrayUtils {
         }
     }
 
-    public static <E> void puts(SparseArray<E> array1, SparseArray<E> array2) {
+    public static <E> void merge(SparseArray<E> array1, SparseArray<E> array2) {
         if (nonEmpty(array2)) {
             int size = array2.size();
             for (int i = 0; i < size; i++) {

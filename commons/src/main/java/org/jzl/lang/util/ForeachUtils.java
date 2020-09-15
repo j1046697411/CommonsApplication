@@ -20,7 +20,13 @@ public final class ForeachUtils {
     private ForeachUtils() {
     }
 
-    public static <T> void each(int[] array, IntBinaryConsumer consumer) {
+    /**
+     * 遍历整形数组，并在过程中传递出下标
+     *
+     * @param array    被遍历的数组
+     * @param consumer 含下标的消费者
+     */
+    public static void each(int[] array, IntBinaryConsumer consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         if (ArrayUtils.nonEmpty(array)) {
             int length = array.length;
@@ -30,7 +36,13 @@ public final class ForeachUtils {
         }
     }
 
-    public static <T> void eachIfBack(int[] array, IntBinaryPredicate predicate) {
+    /**
+     * 遍历整形数组，在过程中满足条件就跳出遍历
+     *
+     * @param array     被遍历的数组
+     * @param predicate 包含下标的条件
+     */
+    public static void eachIfBack(int[] array, IntBinaryPredicate predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (ArrayUtils.nonEmpty(array)) {
             int length = array.length;
@@ -42,6 +54,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历数组，并在过程中传递出下标
+     *
+     * @param array    被遍历的数组
+     * @param consumer 含下标的消费者
+     */
     public static <T> void each(T[] array, IntConsumer<T> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
 
@@ -53,6 +71,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历数组，不包含下标
+     *
+     * @param array    被遍历的数组
+     * @param consumer 消费者
+     */
     public static <T> void each(T[] array, Consumer<T> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
 
@@ -63,6 +87,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历数组，在过程中满足条件就跳出遍历
+     *
+     * @param array     被遍历的数组
+     * @param predicate 包含下标的条件
+     */
     public static <T> void eachIfBack(T[] array, IntPredicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (ArrayUtils.nonEmpty(array)) {
@@ -75,6 +105,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历map，在过程中满足条件就跳出遍历
+     *
+     * @param map       被遍历的map
+     * @param predicate 条件
+     */
     public static <K, V> void eachIfBack(Map<K, V> map, BinaryPredicate<K, V> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (MapUtils.nonEmpty(map)) {
@@ -86,6 +122,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历map
+     *
+     * @param map      被遍历的map
+     * @param consumer 条件
+     */
     public static <K, V> void each(Map<K, V> map, BinaryConsumer<K, V> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         if (MapUtils.nonEmpty(map)) {
@@ -95,6 +137,12 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历list，包含下标
+     *
+     * @param list     被遍历的list
+     * @param consumer 包含下标的消费者
+     */
     public static <T> void each(List<T> list, IntConsumer<T> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         if (CollectionUtils.nonEmpty(list)) {
@@ -105,6 +153,13 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历list，满足添加跳出遍历
+     *
+     * @param list      被遍历的list
+     * @param predicate 带下下标的条件
+     * @param <T>       泛型对象
+     */
     public static <T> void eachIfBack(List<T> list, IntPredicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "predicate");
         if (CollectionUtils.nonEmpty(list)) {
@@ -117,6 +172,13 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历iterable
+     *
+     * @param iterable 被遍历的iterable
+     * @param consumer 带下下标的消费者
+     * @param <T>      泛型对象
+     */
     public static <T> void each(Iterable<T> iterable, Consumer<T> consumer) {
         ObjectUtils.requireNonNull(consumer, "consumer");
         if (ObjectUtils.nonNull(iterable)) {
@@ -126,6 +188,13 @@ public final class ForeachUtils {
         }
     }
 
+    /**
+     * 遍历iterable，满足条件跳出遍历
+     *
+     * @param iterable  被遍历的iterable
+     * @param predicate 条件
+     * @param <T>       泛型对象
+     */
     public static <T> void eachIfBack(Iterable<T> iterable, Predicate<T> predicate) {
         ObjectUtils.requireNonNull(predicate, "consumer");
         if (ObjectUtils.nonNull(iterable)) {

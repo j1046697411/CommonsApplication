@@ -26,7 +26,6 @@ public final class StringUtils {
     public static final String SPACE = " ";
 
     private StringUtils() {
-
     }
 
     public static boolean isEmpty(CharSequence text) {

@@ -43,6 +43,10 @@ public final class ArrayUtils {
         return array == null || array.length == 0;
     }
 
+    public static boolean isEmpty(Object array) {
+        return array == null || !array.getClass().isArray() || Array.getLength(array) == 0;
+    }
+
     public static boolean nonEmpty(long[] array) {
         return array != null && array.length != 0;
     }
@@ -79,14 +83,10 @@ public final class ArrayUtils {
         return array != null && array.length > 0;
     }
 
-    public static boolean isEmpty(Object array) {
-        return array == null || !array.getClass().isArray() || Array.getLength(array) == 0;
-    }
 
     @SuppressWarnings("unchecked")
     public static <T> T[] newArray(Class<T> type, int length) {
-        ObjectUtils.requireNonNull(type);
-        return (T[]) Array.newInstance(type, length);
+        return (T[]) Array.newInstance(ObjectUtils.requireNonNull(type, "type"), length);
     }
 
     public static int length(Object target) {

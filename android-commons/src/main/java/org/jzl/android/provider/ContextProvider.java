@@ -12,6 +12,7 @@ import androidx.annotation.StringRes;
 import org.jzl.lang.fun.Consumer;
 import org.jzl.lang.util.ObjectUtils;
 
+@FunctionalInterface
 public interface ContextProvider extends Provider<Context> {
     Consumer<Intent> EMPTY = intent -> {
     };
